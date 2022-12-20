@@ -1,33 +1,52 @@
 import { assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import {
   Data,
-  ExtPlutusData,
-  genPType,
-  genPTypeData,
+  Generators,
   gMaxDepth,
   gMaxLength,
   PlutusData,
-  stripConstr,
-  stripExt,
+  toPlutusData,
 } from "../src/mod.ts";
-import { PType } from "../src/plutus/parse.ts";
+import { PByteString } from "../src/parse/pbytestring.ts";
+import { PConstr } from "../src/parse/pconstr.ts";
+import { PInteger } from "../src/parse/pinteger.ts";
+import { PList } from "../src/parse/plist.ts";
+import { PMap } from "../src/parse/pmap.ts";
+import { PRecord } from "../src/parse/precord.ts";
+import { PSum } from "../src/parse/psum.ts";
+import { PType } from "../src/parse/ptype.ts";
 
 Deno.test("parsing property tests", () => {
   const dataErrs = new Map<string, number>();
   const ptypeErrs = new Map<string, number>();
   const otherErrs = new Map<string, number>();
 
-  const iterations = 1000;
+  const gen = new Generators(
+    [
+      // PData.genPType,
+      PInteger.genPType,
+      PByteString.genPType,
+    ],
+    [
+      PList.genPType,
+      PMap.genPType,
+      PConstr.genPType,
+      PRecord.genPType,
+      // PSum.genPType,
+      // PObject.genPType,
+    ],
+  );
+
+  const iterations = 100;
   for (let i = 0; i < iterations; i++) {
     console.log(i);
     try {
-      const ptype: PType = genPType(gMaxDepth, gMaxLength);
-      const rawData = genPTypeData(ptype);
-      const data = stripExt(rawData);
-      const extData = stripConstr(rawData);
+      const ptype = gen.generate(gMaxDepth, gMaxLength);
+      const anyData = ptype.genData();
+      const plutusData = ptype.genPlutusData();
 
-      testDataParse(data, dataErrs);
-      testPTypeParse(data, extData, ptype, ptypeErrs);
+      testDataParse(plutusData, dataErrs);
+      testPTypeParse(plutusData, anyData, ptype, ptypeErrs);
     } catch (err) {
       logError(err, otherErrs);
     }
@@ -41,25 +60,25 @@ Deno.test("parsing property tests", () => {
   assertEquals(correct, iterations);
 });
 
-function testDataParse(data: PlutusData, record: Map<string, number>) {
+function testDataParse(plutusData: PlutusData, errors: Map<string, number>) {
   try {
-    assertEquals(data, Data.from(Data.to(data)));
+    assertEquals(plutusData, Data.from(Data.to(plutusData)));
   } catch (err) {
-    logError(err, record);
+    logError(err, errors);
   }
 }
 
 function testPTypeParse(
-  data: PlutusData,
-  extData: ExtPlutusData,
-  ptype: PType,
-  record: Map<string, number>,
+  plutusData: PlutusData,
+  anyData: any,
+  ptype: PType<PlutusData, any>,
+  errors: Map<string, number>,
 ) {
   try {
-    assertEquals(data, ptype.pconstant(ptype.plift(data)));
-    assertEquals(extData, ptype.plift(ptype.pconstant(extData)));
+    assertEquals(plutusData, ptype.pconstant(ptype.plift(plutusData)));
+    assertEquals(anyData, ptype.plift(ptype.pconstant(anyData)));
   } catch (err) {
-    logError(err, record);
+    logError(err, errors);
   }
 }
 
