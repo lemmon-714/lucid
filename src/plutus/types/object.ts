@@ -4,20 +4,28 @@ import { PConstanted, PData, PLifted, PType, RecordOf } from "./type.ts";
 
 // type FieldsOf<PFields extends PData> = Array<PLifted< PFields[keyof PFields] >>
 
-export class PObject<PFields extends PData>
-  implements PType<Array<PConstanted<PFields>>, PLifted<PFields>> {
+export class PObject<
+  PFields extends PData,
+  O extends abstract new (...args: any) => any,
+> implements PType<Array<PConstanted<PFields>>, O> {
   constructor(
     public precord: PRecord<PFields>, // TODO better type here
-    public anew: { new (...params: Array<PLifted<PFields>>): PLifted<PFields> },
+    public anew: {
+      new (...params: ConstructorParameters<O>): PLifted<PFields>;
+    },
   ) {}
 
-  public plift = (l: Array<PConstanted<PFields>>): PLifted<PFields> => {
+  public plift = (l: Array<PConstanted<PFields>>): O => {
     const record = this.precord.plift(l);
-    const o = new this.anew(...Object.values(record));
+    const o = new this.anew(
+      ...Object.values(record) as ConstructorParameters<O>,
+    );
     return o;
   };
 
-  public pconstant = (data: PLifted<PFields>): Array<PConstanted<PFields>> => {
+  public pconstant = (
+    data: ConstructorParameters<O>,
+  ): Array<PConstanted<PFields>> => {
     return this.precord.pconstant(data as RecordOf<any>);
   };
 
@@ -25,13 +33,15 @@ export class PObject<PFields extends PData>
     gen: Generators,
     maxDepth: number,
     maxLength: number,
-  ): PObject<PData> {
+  ): PObject<PData, any> {
     throw new Error("not implemented");
   }
 
   public genData = (): PLifted<PFields> => {
     const record = this.precord.genData();
-    const o = new this.anew(...Object.values(record));
+    const o = new this.anew(
+      ...Object.values(record) as ConstructorParameters<O>,
+    );
     return o;
   };
 
