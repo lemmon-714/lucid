@@ -8,6 +8,7 @@ import {
   toPlutusData,
 } from "../../mod.ts";
 import { Data } from "../data.ts";
+import { PConstraint } from "./constraint.ts";
 import { PConstanted, PData, PLifted, PType } from "./type.ts";
 
 export class PMap<
@@ -19,7 +20,6 @@ export class PMap<
     public pkey: PType<PConstanted<K>, PLifted<K>>,
     public pvalue: PType<PConstanted<V>, PLifted<V>>,
     public size?: number,
-    public asserts?: ((m: Map<PLifted<K>, PLifted<V>>) => void)[],
   ) {}
 
   public plift = (
@@ -34,7 +34,6 @@ export class PMap<
     m.forEach((value: PLifted<K>, key: PLifted<V>) => {
       p.set(this.pkey.plift(key), this.pvalue.plift(value));
     });
-    if (this.asserts) this.asserts.forEach((a) => a(p));
     return p;
   };
 
@@ -43,7 +42,6 @@ export class PMap<
   ): Map<PConstanted<K>, PConstanted<V>> => {
     assert(data instanceof Map, `pconstant: expected Map`);
     assert(!this.size || this.size === data.size, `pconstant: wrong size`);
-    if (this.asserts) this.asserts.forEach((a) => a(data));
     const m = new Map<PConstanted<K>, PConstanted<V>>();
     data.forEach((value, key) => {
       m.set(this.pkey.pconstant(key), this.pvalue.pconstant(value));
@@ -63,54 +61,65 @@ export class PMap<
     return new PMap(pkey, pvalue, size);
   }
 
-  public genData = (
-    genSize = genNonNegative,
-  ): Map<PLifted<K>, PConstanted<V>> => {
-    const size = this.size ? this.size : genSize(gMaxLength);
+  static genMap<K extends PData, V extends PData>(
+    pkey: K,
+    pvalue: V,
+    size: number,
+  ): Map<PLifted<K>, PConstanted<V>> {
     const m = new Map<PLifted<K>, PLifted<V>>();
     const keyStrings = new Array<string>();
     let timeout = 10;
     while (m.size < size) {
-      const key = this.pkey.genData();
+      const key = pkey.genData();
       const keyString = Data.to(toPlutusData(key));
       if (!keyStrings.includes(keyString)) {
         keyStrings.push(keyString);
-        const value = this.pvalue.genData();
+        const value = pvalue.genData();
         m.set(key, value);
       } else if (timeout-- < 0) {
         throw new Error(
           `timeout: ${JSON.stringify(keyStrings)}\nkey: ${
-            JSON.stringify(this.pkey)
+            JSON.stringify(pkey)
           }`,
         );
       }
     }
     return m;
+  }
+
+  public genData = (): Map<PLifted<K>, PConstanted<V>> => {
+    const size = this.size ? this.size : genNonNegative(gMaxLength);
+    return PMap.genMap(this.pkey, this.pvalue, size);
   };
 
-  public genPlutusData = (
-    genSize = genNonNegative,
-  ): Map<PConstanted<K>, PConstanted<V>> => {
-    // console.log("map");
-    const size = this.size ? this.size : genSize(gMaxLength);
+  static genPlutusMap<K extends PData, V extends PData>(
+    pkey: K,
+    pvalue: V,
+    size: number,
+  ): Map<PConstanted<K>, PConstanted<V>> {
     const m = new Map<PConstanted<K>, PConstanted<V>>();
     const keyStrings = new Array<string>();
     let timeout = 10;
     while (m.size < size) {
-      const key = this.pkey.genPlutusData();
+      const key = pkey.genPlutusData() as PConstanted<K>;
       const keyString = Data.to(key);
       if (!keyStrings.includes(keyString)) {
         keyStrings.push(keyString);
-        const value = this.pvalue.genPlutusData();
+        const value = pvalue.genPlutusData() as PConstanted<V>;
         m.set(key, value);
       } else if (timeout-- < 0) {
         throw new Error(
           `timeout: ${JSON.stringify(keyStrings)}\nkey: ${
-            JSON.stringify(this.pkey)
+            JSON.stringify(pkey)
           }`,
         );
       }
     }
     return m;
-  };
+  }
+
+  public genPlutusData(): Map<PConstanted<K>, PConstanted<V>> {
+    const size = this.size ? this.size : genNonNegative(gMaxLength);
+    return PMap.genPlutusMap(this.pkey, this.pvalue, size);
+  }
 }

@@ -8,10 +8,12 @@ T is the equivalent concrete type.
 */
 
 import { PlutusData } from "../../types/types.ts";
+import { Constr } from "../data.ts";
+import { PConstr } from "./mod.ts";
 
 export type PConstanted<PT extends PType<PlutusData, any>> = ReturnType<
   PT["pconstant"]
->;
+>; //| PT extends PConstr<PT> ? Constr<PConstanted<PT>> : never;
 export type PLifted<PT extends PType<PlutusData, any>> = ReturnType<
   PT["plift"]
 >;

@@ -8,7 +8,6 @@ export class PList<PT extends PData>
   constructor(
     public pelem: PType<PConstanted<PT>, PLifted<PT>>,
     public length?: number,
-    public asserts?: ((l: Array<PLifted<PT>>) => void)[],
   ) {
     assert(!length || length >= 0, "negative length");
   }
@@ -20,7 +19,6 @@ export class PList<PT extends PData>
       `plift: wrong length - ${this.length} vs. ${l.length}`,
     );
     const l_ = l.map((elem) => this.pelem.plift(elem));
-    if (this.asserts) this.asserts.forEach((a) => a(l_));
     return l_;
   };
 
@@ -30,7 +28,6 @@ export class PList<PT extends PData>
       !this.length || this.length === data.length,
       `pconstant: wrong length`,
     );
-    if (this.asserts) this.asserts.forEach((a) => a(data));
     return data.map(this.pelem.pconstant);
   };
 

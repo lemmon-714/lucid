@@ -6,8 +6,6 @@ export class PRecord<PT extends PData>
   implements PType<Array<PConstanted<PT>>, RecordOf<PLifted<PT>>> {
   constructor(
     public pfields: RecordOf<PType<PConstanted<PT>, PLifted<PT>>>,
-    // public plifted: { new (...params: any): PLifted<PT> },
-    public asserts?: ((o: PLifted<PT>) => void)[],
   ) {
   }
 
@@ -35,12 +33,6 @@ export class PRecord<PT extends PData>
       !(data instanceof Array),
       `PRecord.pconstant: unexpected Array: ${data}`,
     );
-
-    if (this.asserts) {
-      this.asserts.forEach((assert) => {
-        assert(data as PLifted<PT>);
-      });
-    }
 
     const l = new Array<PConstanted<PT>>();
     Object.entries(data).forEach(([key, value]) => {

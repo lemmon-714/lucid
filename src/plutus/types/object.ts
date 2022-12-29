@@ -7,17 +7,11 @@ export class PObject<PT extends PData>
   constructor(
     public precord: PRecord<PT>, // TODO better type here
     public anew: { new (...params: any): PLifted<PT> },
-    public asserts?: ((o: PLifted<PT>) => void)[],
   ) {}
 
   public plift = (l: Array<PConstanted<PT>>): PLifted<PT> => {
     const record = this.precord.plift(l);
     const o = new this.anew(...Object.values(record));
-    if (this.asserts) {
-      this.asserts.forEach((assert) => {
-        assert(o);
-      });
-    }
     return o;
   };
 

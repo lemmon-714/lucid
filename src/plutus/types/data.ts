@@ -5,17 +5,11 @@ import { PType } from "./type.ts";
  * TODO consider type checks in the functions still.
  */
 export class PAny<P extends PlutusData> implements PType<P, P> {
-  constructor(
-    public asserts?: ((d: PlutusData) => void)[],
-  ) {}
-
   public plift(data: P): P {
-    if (this.asserts) this.asserts.forEach((a) => a(data));
     return data;
   }
 
   public pconstant(data: P): P {
-    // if (this.asserts) this.asserts.forEach((a) => a(data)); // TODO FIXME
     return data;
   }
 

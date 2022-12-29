@@ -1,5 +1,6 @@
 export * from "./bytestring.ts";
 export * from "./constr.ts";
+export * from "./constraint.ts";
 export * from "./data.ts";
 export * from "./integer.ts";
 export * from "./list.ts";
