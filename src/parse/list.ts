@@ -6,7 +6,7 @@ import {
   maybeNdef,
   PlutusData,
 } from "../mod.ts";
-import { PType } from "./ptype.ts";
+import { PType } from "./type.ts";
 
 export class PList<P extends PlutusData, T>
   implements PType<Array<P>, Array<T>> {

@@ -1,7 +1,4 @@
 import { PlutusData } from "../types/mod.ts";
-import { PByteString } from "./pbytestring.ts";
-import { PInteger } from "./pinteger.ts";
-import { PMap } from "./pmap.ts";
 
 /*
 PType - for parser-type. Also a nod to Plutarch.

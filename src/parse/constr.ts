@@ -6,8 +6,8 @@ import {
   maxInteger,
   PlutusData,
 } from "../mod.ts";
-import { PRecord } from "./precord.ts";
-import { PType, RecordOf } from "./ptype.ts";
+import { PRecord } from "./record.ts";
+import { PType, RecordOf } from "./type.ts";
 
 export class PConstr<P extends PlutusData, T>
   implements PType<Constr<P>, RecordOf<T>> {

@@ -1,5 +1,5 @@
 import { PlutusData } from "../mod.ts";
-import { PType } from "./ptype.ts";
+import { PType } from "./type.ts";
 
 /** the most general type. Similar to any or undefined.
  * TODO consider type checks in the functions still.

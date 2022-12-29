@@ -1,6 +1,6 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { Generators, genName, genNumber, PlutusData } from "../mod.ts";
-import { PType, RecordOf } from "./ptype.ts";
+import { PType, RecordOf } from "./type.ts";
 
 export class PRecord<P extends PlutusData, T>
   implements PType<Array<P>, RecordOf<T>> {

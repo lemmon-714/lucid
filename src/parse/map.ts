@@ -8,7 +8,7 @@ import {
   PlutusData,
   toPlutusData,
 } from "../mod.ts";
-import { PType } from "./ptype.ts";
+import { PType } from "./type.ts";
 
 export class PMap<KP extends PlutusData, VP extends PlutusData, KT, VT>
   implements PType<Map<KP, VP>, Map<KT, VT>> {
