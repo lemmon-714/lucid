@@ -24,7 +24,7 @@ export class PObject<
   public pconstant = (
     data: O,
   ): Array<PConstanted<PFields>> => {
-    return this.precord.pconstant(data as RecordOf<any>);
+    return this.precord.pconstant(data as RecordOf<PLifted<PFields>>);
   };
 
   static genPType(
