@@ -43,22 +43,24 @@ export class PList<PElem extends PData>
     return new PList(pelem, length);
   }
 
-  public genData = (): PLifted<PElem>[] => {
-    const length = this.length ? this.length : genNonNegative(gMaxLength);
-    const l = new Array<PLifted<PElem>>();
+  static genList<T>(
+    elemGenerator: () => T,
+    length: number,
+  ): Array<T> {
+    const l = new Array<T>();
     for (let i = 0; i < length; i++) {
-      l.push(this.pelem.genData());
+      l.push(elemGenerator());
     }
     return l;
+  }
+
+  public genData = (): PLifted<PElem>[] => {
+    const length = this.length ? this.length : genNonNegative(gMaxLength);
+    return PList.genList(this.pelem.genData, length);
   };
 
   public genPlutusData = (): PConstanted<PElem>[] => {
-    // console.log("map");
     const length = this.length ? this.length : genNonNegative(gMaxLength);
-    const l = new Array<PConstanted<PElem>>();
-    for (let i = 0; i < length; i++) {
-      l.push(this.pelem.genPlutusData());
-    }
-    return l;
+    return PList.genList(this.pelem.genPlutusData, length);
   };
 }

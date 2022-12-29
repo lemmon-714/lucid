@@ -8,7 +8,7 @@ import {
 } from "../../mod.ts";
 import { Constr } from "../data.ts";
 import { PRecord } from "./record.ts";
-import { PConstanted, PLifted, PType, RecordOf } from "./type.ts";
+import { PConstanted, PLifted, PType, PTypes, RecordOf } from "./type.ts";
 
 export class PConstr<PFields extends PData>
   implements PType<Constr<PConstanted<PFields>>, RecordOf<PLifted<PFields>>> {
@@ -59,3 +59,4 @@ export class PConstr<PFields extends PData>
     return new Constr(this.index, fields);
   };
 }
+Object.defineProperty(PTypes, "constr", PConstr);

@@ -6,8 +6,7 @@ export class PRecord<PFields extends PData>
   implements PType<Array<PConstanted<PFields>>, RecordOf<PLifted<PFields>>> {
   constructor(
     public pfields: RecordOf<PType<PConstanted<PFields>, PLifted<PFields>>>,
-  ) {
-  }
+  ) {}
 
   public plift = (
     l: Array<PConstanted<PFields>>,
