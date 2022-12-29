@@ -1,11 +1,7 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import {
-  Constr,
-  Generators,
-  genNumber,
-  PlutusData,
-  randomChoice,
-} from "../mod.ts";
+import { Generators, genNumber, PlutusData, randomChoice } from "../../mod.ts";
+import { Constr } from "../data.ts";
+
 import { PRecord } from "./record.ts";
 import { PType, RecordOf } from "./type.ts";
 
@@ -52,7 +48,7 @@ export class PSum<P extends PlutusData, T>
   };
 
   public genPlutusData = (): Constr<P> => {
-    console.log("sum");
+    // console.log("sum");
     const index = genNumber(this.pconstrs.length);
     const constr = this.pconstrs[index];
     assert(

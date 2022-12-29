@@ -1,5 +1,3 @@
-import { PlutusData } from "../types/mod.ts";
-
 /*
 PType - for parser-type. Also a nod to Plutarch.
 It's basically a crude runtime type system for data parsing.
@@ -8,6 +6,8 @@ non-P-type, not actual data.
 plift parses, pconstant composes.
 T is the equivalent concrete type.
 */
+
+import { PlutusData } from "../../types/types.ts";
 
 export interface PType<P extends PlutusData, T> {
   plift(data: P): T;

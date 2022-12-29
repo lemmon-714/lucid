@@ -5,7 +5,7 @@ import {
   gMaxLength,
   maybeNdef,
   PlutusData,
-} from "../mod.ts";
+} from "../../mod.ts";
 import { PType } from "./type.ts";
 
 export class PList<P extends PlutusData, T>
@@ -59,7 +59,7 @@ export class PList<P extends PlutusData, T>
   };
 
   public genPlutusData = (): P[] => {
-    console.log("map");
+    // console.log("map");
     const length = this.length ? this.length : genNumber(gMaxLength);
     const l = new Array<P>();
     for (let i = 0; i < length; i++) {

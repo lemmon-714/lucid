@@ -1,11 +1,6 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import {
-  Constr,
-  Generators,
-  genNumber,
-  maxInteger,
-  PlutusData,
-} from "../mod.ts";
+import { Generators, genNumber, maxInteger, PlutusData } from "../../mod.ts";
+import { Constr } from "../data.ts";
 import { PRecord } from "./record.ts";
 import { PType, RecordOf } from "./type.ts";
 
@@ -53,7 +48,7 @@ export class PConstr<P extends PlutusData, T>
   };
 
   public genPlutusData = (): Constr<P> => {
-    console.log("constr");
+    // console.log("constr");
     const fields = this.pfields.genPlutusData();
     return new Constr(this.index, fields);
   };

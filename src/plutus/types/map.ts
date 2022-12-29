@@ -1,13 +1,13 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import {
-  Data,
   Generators,
   genNumber,
   gMaxLength,
   maybeNdef,
   PlutusData,
   toPlutusData,
-} from "../mod.ts";
+} from "../../mod.ts";
+import { Data } from "../data.ts";
 import { PType } from "./type.ts";
 
 export class PMap<KP extends PlutusData, VP extends PlutusData, KT, VT>
@@ -84,7 +84,7 @@ export class PMap<KP extends PlutusData, VP extends PlutusData, KT, VT>
   };
 
   public genPlutusData = (): Map<KP, VP> => {
-    console.log("map");
+    // console.log("map");
     const size = this.size ? this.size : genNumber(gMaxLength);
     const m = new Map<KP, VP>();
     const keyStrings = new Array<string>();

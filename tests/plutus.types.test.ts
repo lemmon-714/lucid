@@ -4,17 +4,16 @@ import {
   Generators,
   gMaxDepth,
   gMaxLength,
+  PByteString,
+  PConstr,
+  PInteger,
+  PList,
   PlutusData,
+  PMap,
+  PRecord,
+  PType,
   toPlutusData,
 } from "../src/mod.ts";
-import { PByteString } from "../src/parse/pbytestring.ts";
-import { PConstr } from "../src/parse/pconstr.ts";
-import { PInteger } from "../src/parse/pinteger.ts";
-import { PList } from "../src/parse/plist.ts";
-import { PMap } from "../src/parse/pmap.ts";
-import { PRecord } from "../src/parse/precord.ts";
-import { PSum } from "../src/parse/psum.ts";
-import { PType } from "../src/parse/ptype.ts";
 
 Deno.test("parsing property tests", () => {
   const dataErrs = new Map<string, number>();

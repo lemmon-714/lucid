@@ -1,5 +1,5 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { Generators, genName, genNumber, PlutusData } from "../mod.ts";
+import { Generators, genName, genNumber, PlutusData } from "../../mod.ts";
 import { PType, RecordOf } from "./type.ts";
 
 export class PRecord<P extends PlutusData, T>
@@ -75,7 +75,7 @@ export class PRecord<P extends PlutusData, T>
   };
 
   public genPlutusData = (): P[] => {
-    console.log("record");
+    // console.log("record");
     const l = new Array<P>();
     Object.entries(this.pfields).forEach(([_, pfield]) => {
       l.push(pfield.genPlutusData());

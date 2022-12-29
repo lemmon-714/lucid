@@ -1,4 +1,4 @@
-import { Generators, PlutusData } from "../mod.ts";
+import { Generators, PlutusData } from "../../mod.ts";
 import { PRecord } from "./record.ts";
 import { PType, RecordOf } from "./type.ts";
 
@@ -39,7 +39,7 @@ export class PObject<P extends PlutusData, T> implements PType<Array<P>, T> {
   };
 
   public genPlutusData = (): P[] => {
-    console.log("object");
+    // console.log("object");
     const record = this.precord.genPlutusData();
     return Object.values(record);
   };

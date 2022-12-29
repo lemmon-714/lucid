@@ -1,10 +1,6 @@
 // TODO consider generating wrong cases as well
 
-import { PlutusData } from "../mod.ts";
-import { PByteString } from "../parse/pbytestring.ts";
-import { PInteger } from "../parse/pinteger.ts";
-import { PRecord } from "../parse/precord.ts";
-import { PType } from "../parse/ptype.ts";
+import { PByteString, PInteger, PlutusData, PRecord, PType } from "../mod.ts";
 
 const zeroChance = 0.1;
 const ndefChance = 0.1;
@@ -102,7 +98,7 @@ export class Generators {
         ...this.containers,
       ])
       : randomChoice(this.primitives);
-    console.log(maxDepth, maxLength);
+    // console.log(maxDepth, maxLength);
     return generator(this, Math.max(maxDepth - 1, 0), maxLength);
   }
 }
