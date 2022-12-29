@@ -1,22 +1,22 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { Generators, genName, genNonNegative, PlutusData } from "../../mod.ts";
-import { PType, RecordOf } from "./type.ts";
+import { Generators, genName, genNonNegative } from "../../mod.ts";
+import { PConstanted, PData, PLifted, PType, RecordOf } from "./type.ts";
 
-export class PRecord<P extends PlutusData, T>
-  implements PType<Array<P>, RecordOf<T>> {
+export class PRecord<PT extends PData>
+  implements PType<Array<PConstanted<PT>>, RecordOf<PLifted<PT>>> {
   constructor(
-    public pfields: RecordOf<PType<P, T>>,
-    // public plifted: { new (...params: any): T },
-    public asserts?: ((o: T) => void)[],
+    public pfields: RecordOf<PType<PConstanted<PT>, PLifted<PT>>>,
+    // public plifted: { new (...params: any): PLifted<PT> },
+    public asserts?: ((o: PLifted<PT>) => void)[],
   ) {
   }
 
-  public plift = (l: Array<P>): RecordOf<T> => {
+  public plift = (l: Array<PConstanted<PT>>): RecordOf<PLifted<PT>> => {
     assert(
       l instanceof Array,
       `Record.plift: expected List: ${l}`,
     );
-    const r: Record<string, T> = {};
+    const r: Record<string, PLifted<PT>> = {};
 
     const pfields = Object.entries(this.pfields);
     l.forEach((value, i) => {
@@ -28,8 +28,8 @@ export class PRecord<P extends PlutusData, T>
   };
 
   public pconstant = (
-    data: RecordOf<T>,
-  ): Array<P> => {
+    data: RecordOf<PLifted<PT>>,
+  ): Array<PConstanted<PT>> => {
     assert(data instanceof Object, `PRecord.pconstant: expected Object`);
     assert(
       !(data instanceof Array),
@@ -38,11 +38,11 @@ export class PRecord<P extends PlutusData, T>
 
     if (this.asserts) {
       this.asserts.forEach((assert) => {
-        assert(data as T);
+        assert(data as PLifted<PT>);
       });
     }
 
-    const l = new Array<P>();
+    const l = new Array<PConstanted<PT>>();
     Object.entries(data).forEach(([key, value]) => {
       const pfield = this.pfields[key];
       assert(pfield, `field not found: ${key}`);
@@ -55,8 +55,8 @@ export class PRecord<P extends PlutusData, T>
     gen: Generators,
     maxDepth: number,
     maxLength: number,
-  ): PRecord<PlutusData, any> {
-    const pfields: RecordOf<PType<PlutusData, any>> = {};
+  ): PRecord<PData> {
+    const pfields: RecordOf<PData> = {};
     const maxi = genNonNegative(maxLength);
     for (let i = 0; i < maxi; i++) {
       const key = genName();
@@ -66,17 +66,17 @@ export class PRecord<P extends PlutusData, T>
     return new PRecord(pfields);
   }
 
-  public genData = (): RecordOf<T> => {
-    const r: RecordOf<T> = {};
+  public genData = (): RecordOf<PLifted<PT>> => {
+    const r: RecordOf<PLifted<PT>> = {};
     Object.entries(this.pfields).forEach(([key, pfield]) => {
       r[key] = pfield.genData();
     });
     return r;
   };
 
-  public genPlutusData = (): P[] => {
+  public genPlutusData = (): PConstanted<PT>[] => {
     // console.log("record");
-    const l = new Array<P>();
+    const l = new Array<PConstanted<PT>>();
     Object.entries(this.pfields).forEach(([_, pfield]) => {
       l.push(pfield.genPlutusData());
     });

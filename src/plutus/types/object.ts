@@ -1,15 +1,16 @@
-import { Generators, PlutusData } from "../../mod.ts";
+import { Generators } from "../../mod.ts";
 import { PRecord } from "./record.ts";
-import { PType, RecordOf } from "./type.ts";
+import { PConstanted, PData, PLifted, PType, RecordOf } from "./type.ts";
 
-export class PObject<P extends PlutusData, T> implements PType<Array<P>, T> {
+export class PObject<PT extends PData>
+  implements PType<Array<PConstanted<PT>>, PLifted<PT>> {
   constructor(
-    public precord: PRecord<P, any>, // TODO better type here
-    public anew: { new (...params: any): T },
-    public asserts?: ((o: T) => void)[],
+    public precord: PRecord<PT>, // TODO better type here
+    public anew: { new (...params: any): PLifted<PT> },
+    public asserts?: ((o: PLifted<PT>) => void)[],
   ) {}
 
-  public plift = (l: Array<P>): T => {
+  public plift = (l: Array<PConstanted<PT>>): PLifted<PT> => {
     const record = this.precord.plift(l);
     const o = new this.anew(...Object.values(record));
     if (this.asserts) {
@@ -20,7 +21,7 @@ export class PObject<P extends PlutusData, T> implements PType<Array<P>, T> {
     return o;
   };
 
-  public pconstant = (data: T): Array<P> => {
+  public pconstant = (data: PLifted<PT>): Array<PConstanted<PT>> => {
     return this.precord.pconstant(data as RecordOf<any>);
   };
 
@@ -28,17 +29,17 @@ export class PObject<P extends PlutusData, T> implements PType<Array<P>, T> {
     gen: Generators,
     maxDepth: number,
     maxLength: number,
-  ): PObject<PlutusData, any> {
+  ): PObject<PData> {
     throw new Error("not implemented");
   }
 
-  public genData = (): T => {
+  public genData = (): PLifted<PT> => {
     const record = this.precord.genData();
     const o = new this.anew(...Object.values(record));
     return o;
   };
 
-  public genPlutusData = (): P[] => {
+  public genPlutusData = (): PConstanted<PT>[] => {
     // console.log("object");
     const record = this.precord.genPlutusData();
     return Object.values(record);

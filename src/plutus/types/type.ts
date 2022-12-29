@@ -9,6 +9,13 @@ T is the equivalent concrete type.
 
 import { PlutusData } from "../../types/types.ts";
 
+export type PConstanted<PT extends PType<PlutusData, any>> = ReturnType<
+  PT["pconstant"]
+>;
+export type PLifted<PT extends PType<PlutusData, any>> = ReturnType<
+  PT["plift"]
+>;
+
 export interface PType<P extends PlutusData, T> {
   plift(data: P): T;
   pconstant(data: T): P;
@@ -18,6 +25,7 @@ export interface PType<P extends PlutusData, T> {
 }
 
 export type RecordOf<T> = Record<string, T>;
+export type PData = PType<PlutusData, any>;
 
 // examples
 

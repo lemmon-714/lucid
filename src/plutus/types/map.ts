@@ -8,27 +8,30 @@ import {
   toPlutusData,
 } from "../../mod.ts";
 import { Data } from "../data.ts";
-import { PType } from "./type.ts";
+import { PConstanted, PData, PLifted, PType } from "./type.ts";
 
-export class PMap<KP extends PlutusData, VP extends PlutusData, KT, VT>
-  implements PType<Map<KP, VP>, Map<KT, VT>> {
+export class PMap<
+  K extends PType<PlutusData, any>,
+  V extends PType<PlutusData, any>,
+> implements
+  PType<Map<PConstanted<K>, PConstanted<V>>, Map<PLifted<K>, PLifted<V>>> {
   constructor(
-    public pkey: PType<KP, KT>,
-    public pvalue: PType<VP, VT>,
+    public pkey: PType<PConstanted<K>, PLifted<K>>,
+    public pvalue: PType<PConstanted<V>, PLifted<V>>,
     public size?: number,
-    public asserts?: ((m: Map<KT, VT>) => void)[],
+    public asserts?: ((m: Map<PLifted<K>, PLifted<V>>) => void)[],
   ) {}
 
   public plift = (
-    m: Map<KP, VP>,
-  ): Map<KT, VT> => {
+    m: Map<PConstanted<K>, PConstanted<V>>,
+  ): Map<PLifted<K>, PLifted<V>> => {
     assert(m instanceof Map, `plift: expected Map`);
     assert(
       !this.size || this.size === m.size,
       `plift: wrong size: ${JSON.stringify(this)} vs. ${JSON.stringify(m)}`,
     );
-    const p = new Map<KT, VT>();
-    m.forEach((value: VP, key: KP) => {
+    const p = new Map<PLifted<K>, PLifted<V>>();
+    m.forEach((value: PLifted<K>, key: PLifted<V>) => {
       p.set(this.pkey.plift(key), this.pvalue.plift(value));
     });
     if (this.asserts) this.asserts.forEach((a) => a(p));
@@ -36,12 +39,12 @@ export class PMap<KP extends PlutusData, VP extends PlutusData, KT, VT>
   };
 
   public pconstant = (
-    data: Map<KT, VT>,
-  ): Map<KP, VP> => {
+    data: Map<PLifted<K>, PLifted<K>>,
+  ): Map<PConstanted<K>, PConstanted<V>> => {
     assert(data instanceof Map, `pconstant: expected Map`);
     assert(!this.size || this.size === data.size, `pconstant: wrong size`);
     if (this.asserts) this.asserts.forEach((a) => a(data));
-    const m = new Map<KP, VP>();
+    const m = new Map<PConstanted<K>, PConstanted<V>>();
     data.forEach((value, key) => {
       m.set(this.pkey.pconstant(key), this.pvalue.pconstant(value));
     });
@@ -52,7 +55,7 @@ export class PMap<KP extends PlutusData, VP extends PlutusData, KT, VT>
     gen: Generators,
     maxDepth: number,
     maxLength: number,
-  ): PMap<PlutusData, PlutusData, any, any> {
+  ): PMap<PData, PData> {
     const pkey = gen.generate(maxDepth - 1, maxLength);
     const pvalue = gen.generate(maxDepth - 1, maxLength);
     const size = maybeNdef(genNonNegative(maxLength));
@@ -60,9 +63,11 @@ export class PMap<KP extends PlutusData, VP extends PlutusData, KT, VT>
     return new PMap(pkey, pvalue, size);
   }
 
-  public genData = (): Map<KT, VT> => {
-    const size = this.size ? this.size : genNonNegative(gMaxLength);
-    const m = new Map<KT, VT>();
+  public genData = (
+    genSize = genNonNegative,
+  ): Map<PLifted<K>, PConstanted<V>> => {
+    const size = this.size ? this.size : genSize(gMaxLength);
+    const m = new Map<PLifted<K>, PLifted<V>>();
     const keyStrings = new Array<string>();
     let timeout = 10;
     while (m.size < size) {
@@ -83,10 +88,12 @@ export class PMap<KP extends PlutusData, VP extends PlutusData, KT, VT>
     return m;
   };
 
-  public genPlutusData = (): Map<KP, VP> => {
+  public genPlutusData = (
+    genSize = genNonNegative,
+  ): Map<PConstanted<K>, PConstanted<V>> => {
     // console.log("map");
-    const size = this.size ? this.size : genNonNegative(gMaxLength);
-    const m = new Map<KP, VP>();
+    const size = this.size ? this.size : genSize(gMaxLength);
+    const m = new Map<PConstanted<K>, PConstanted<V>>();
     const keyStrings = new Array<string>();
     let timeout = 10;
     while (m.size < size) {

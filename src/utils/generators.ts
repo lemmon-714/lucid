@@ -44,11 +44,11 @@ export function maybeNdef<T>(value: T) {
   }
 }
 
-export function genPositive(maxValue: number): number {
-  return 1 + Math.floor(Math.random() * maxValue);
+export function genPositive(maxValue?: number): number {
+  return 1 + Math.floor(Math.random() * (maxValue ?? maxInteger));
 }
 
-export function genNonNegative(maxValue: number): number {
+export function genNonNegative(maxValue?: number): number {
   if (Math.random() > zeroChance) {
     return genPositive(maxValue);
   } else {
@@ -56,7 +56,7 @@ export function genNonNegative(maxValue: number): number {
   }
 }
 
-export function genNumber(maxValue: number): number {
+export function genNumber(maxValue?: number): number {
   const n = genNonNegative(maxValue);
   return randomChoice([n, -n]);
 }
@@ -123,7 +123,7 @@ export class Example {
 }
 
 export function genPExample() {
-  return new PRecord<string | bigint, string | bigint>(
+  return new PRecord<PByteString | PInteger>(
     {
       "ccy": new PByteString(),
       "tkn": new PByteString(),

@@ -3,22 +3,23 @@ import {
   Generators,
   genNonNegative,
   maxInteger,
+  PData,
   PlutusData,
 } from "../../mod.ts";
 import { Constr } from "../data.ts";
 import { PRecord } from "./record.ts";
-import { PType, RecordOf } from "./type.ts";
+import { PConstanted, PLifted, PType, RecordOf } from "./type.ts";
 
-export class PConstr<P extends PlutusData, T>
-  implements PType<Constr<P>, RecordOf<T>> {
+export class PConstr<PT extends PData>
+  implements PType<Constr<PConstanted<PT>>, RecordOf<PLifted<PT>>> {
   constructor(
     public index: number,
-    public pfields: PRecord<P, T>,
+    public pfields: PRecord<PT>,
   ) {}
 
   public plift = (
-    c: Constr<P>,
-  ): RecordOf<T> => {
+    c: Constr<PConstanted<PT>>,
+  ): RecordOf<PLifted<PT>> => {
     assert(c instanceof Constr, `plift: expected Constr`);
     assert(
       this.index === c.index,
@@ -28,8 +29,8 @@ export class PConstr<P extends PlutusData, T>
   };
 
   public pconstant = (
-    data: RecordOf<T>,
-  ): Constr<P> => {
+    data: RecordOf<PLifted<PT>>,
+  ): Constr<PConstanted<PT>> => {
     assert(data instanceof Object, `PConstr.pconstant: expected Object`);
     assert(
       !(data instanceof Array),
@@ -42,17 +43,17 @@ export class PConstr<P extends PlutusData, T>
     gen: Generators,
     maxDepth: number,
     maxLength: number,
-  ): PConstr<PlutusData, any> {
+  ): PConstr<PData> {
     const index = genNonNegative(maxInteger);
     const pfields = PRecord.genPType(gen, maxDepth, maxLength);
     return new PConstr(index, pfields);
   }
 
-  public genData = (): RecordOf<T> => {
+  public genData = (): RecordOf<PLifted<PT>> => {
     return this.pfields.genData();
   };
 
-  public genPlutusData = (): Constr<P> => {
+  public genPlutusData = (): Constr<PConstanted<PT>> => {
     // console.log("constr");
     const fields = this.pfields.genPlutusData();
     return new Constr(this.index, fields);

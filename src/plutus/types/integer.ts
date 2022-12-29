@@ -1,5 +1,5 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { genNumber, maxInteger } from "../../mod.ts";
+import { genNumber } from "../../mod.ts";
 import { PType } from "./type.ts";
 
 export class PInteger implements PType<bigint, bigint> {
@@ -27,7 +27,7 @@ export class PInteger implements PType<bigint, bigint> {
   }
 
   public genData(): bigint {
-    return BigInt(genNumber(maxInteger));
+    return BigInt(genNumber());
   }
 
   public genPlutusData(): bigint {

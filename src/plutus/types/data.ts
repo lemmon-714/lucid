@@ -4,7 +4,7 @@ import { PType } from "./type.ts";
 /** the most general type. Similar to any or undefined.
  * TODO consider type checks in the functions still.
  */
-export class PData<P extends PlutusData> implements PType<P, P> {
+export class PAny<P extends PlutusData> implements PType<P, P> {
   constructor(
     public asserts?: ((d: PlutusData) => void)[],
   ) {}
@@ -19,8 +19,8 @@ export class PData<P extends PlutusData> implements PType<P, P> {
     return data;
   }
 
-  static genPType(): PData<PlutusData> {
-    return new PData();
+  static genPType(): PAny<PlutusData> {
+    return new PAny();
   }
 
   public genData(): P {

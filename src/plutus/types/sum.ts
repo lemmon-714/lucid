@@ -9,25 +9,25 @@ import {
 import { Constr } from "../data.ts";
 
 import { PRecord } from "./record.ts";
-import { PType, RecordOf } from "./type.ts";
+import { PConstanted, PData, PLifted, PType, RecordOf } from "./type.ts";
 
-export class PSum<P extends PlutusData, T>
-  implements PType<Constr<P>, RecordOf<T>> {
+export class PSum<PT extends PData>
+  implements PType<Constr<PConstanted<PT>>, RecordOf<PLifted<PT>>> {
   constructor(
-    public pconstrs: Array<PRecord<P, T>>,
+    public pconstrs: Array<PRecord<PT>>,
   ) {}
 
   public plift = (
-    c: Constr<P>,
-  ): RecordOf<T> => {
+    c: Constr<PConstanted<PT>>,
+  ): RecordOf<PLifted<PT>> => {
     assert(c instanceof Constr, `plift: expected Constr`);
     assert(c.index < this.pconstrs.length, `plift: constr index out of bounds`);
     return this.pconstrs[c.index].plift(c.fields);
   };
 
   public pconstant = (
-    data: RecordOf<T>,
-  ): Constr<P> => {
+    data: RecordOf<PLifted<PT>>,
+  ): Constr<PConstanted<PT>> => {
     assert(data instanceof Object, `PSum.pconstant: expected Object`);
     assert(
       !(data instanceof Array),
@@ -40,8 +40,8 @@ export class PSum<P extends PlutusData, T>
     gen: Generators,
     maxDepth: number,
     maxLength: number,
-  ): PSum<PlutusData, any> {
-    const pconstrs = new Array<PRecord<PlutusData, any>>();
+  ): PSum<PData> {
+    const pconstrs = new Array<PRecord<PData>>();
     const maxi = genPositive(maxLength);
     for (let i = 0; i < maxi; i++) {
       pconstrs.push(PRecord.genPType(gen, maxDepth, maxLength));
@@ -49,11 +49,11 @@ export class PSum<P extends PlutusData, T>
     return new PSum(pconstrs);
   }
 
-  public genData = (): RecordOf<T> => {
+  public genData = (): RecordOf<PLifted<PT>> => {
     return randomChoice(this.pconstrs).genData();
   };
 
-  public genPlutusData = (): Constr<P> => {
+  public genPlutusData = (): Constr<PConstanted<PT>> => {
     // console.log("sum");
     const index = genNonNegative(this.pconstrs.length);
     const constr = this.pconstrs[index];
