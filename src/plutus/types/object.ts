@@ -6,25 +6,23 @@ import { PConstanted, PData, PLifted, PType, RecordOf } from "./type.ts";
 
 export class PObject<
   PFields extends PData,
-  O extends abstract new (...args: any) => any,
+  O extends Object,
 > implements PType<Array<PConstanted<PFields>>, O> {
   constructor(
     public precord: PRecord<PFields>, // TODO better type here
-    public anew: {
-      new (...params: ConstructorParameters<O>): PLifted<PFields>;
-    },
+    public anew: new (...args: Array<PLifted<PFields>>) => O,
   ) {}
 
   public plift = (l: Array<PConstanted<PFields>>): O => {
     const record = this.precord.plift(l);
     const o = new this.anew(
-      ...Object.values(record) as ConstructorParameters<O>,
+      ...Object.values(record),
     );
     return o;
   };
 
   public pconstant = (
-    data: ConstructorParameters<O>,
+    data: O,
   ): Array<PConstanted<PFields>> => {
     return this.precord.pconstant(data as RecordOf<any>);
   };
@@ -33,14 +31,14 @@ export class PObject<
     gen: Generators,
     maxDepth: number,
     maxLength: number,
-  ): PObject<PData, any> {
+  ): PObject<PData, abstract new (...args: PLifted<PData>) => Object> {
     throw new Error("not implemented");
   }
 
-  public genData = (): PLifted<PFields> => {
+  public genData = (): O => {
     const record = this.precord.genData();
     const o = new this.anew(
-      ...Object.values(record) as ConstructorParameters<O>,
+      ...Object.values(record),
     );
     return o;
   };
