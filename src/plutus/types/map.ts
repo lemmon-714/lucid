@@ -11,8 +11,8 @@ import { Data } from "../data.ts";
 import { PConstanted, PData, PLifted, PType } from "./type.ts";
 
 export class PMap<
-  K extends PType<PlutusData, any>,
-  V extends PType<PlutusData, any>,
+  K extends PData,
+  V extends PData,
 > implements
   PType<Map<PConstanted<K>, PConstanted<V>>, Map<PLifted<K>, PLifted<V>>> {
   constructor(
