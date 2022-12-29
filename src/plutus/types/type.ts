@@ -8,8 +8,6 @@ T is the equivalent concrete type.
 */
 
 import { PlutusData } from "../../types/types.ts";
-import { Constr } from "../data.ts";
-import { PConstr } from "./mod.ts";
 
 export type PConstanted<PT extends PType<PlutusData, any>> = ReturnType<
   PT["pconstant"]
@@ -28,13 +26,3 @@ export interface PType<P extends PlutusData, T> {
 
 export type RecordOf<T> = Record<string, T>;
 export type PData = PType<PlutusData, any>;
-
-// examples
-
-// const PValue = new PMap(
-//   new PByteString(),
-//   new PMap(new PByteString(), new PInteger()),
-// );
-
-// type Value = Map<string, Map<string, bigint>>;
-// const valueData: Value = new Map<string, Map<string, bigint>>();
