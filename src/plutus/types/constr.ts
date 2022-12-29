@@ -10,16 +10,16 @@ import { Constr } from "../data.ts";
 import { PRecord } from "./record.ts";
 import { PConstanted, PLifted, PType, RecordOf } from "./type.ts";
 
-export class PConstr<PT extends PData>
-  implements PType<Constr<PConstanted<PT>>, RecordOf<PLifted<PT>>> {
+export class PConstr<PFields extends PData>
+  implements PType<Constr<PConstanted<PFields>>, RecordOf<PLifted<PFields>>> {
   constructor(
     public index: number,
-    public pfields: PRecord<PT>,
+    public pfields: PRecord<PFields>,
   ) {}
 
   public plift = (
-    c: Constr<PConstanted<PT>>,
-  ): RecordOf<PLifted<PT>> => {
+    c: Constr<PConstanted<PFields>>,
+  ): RecordOf<PLifted<PFields>> => {
     assert(c instanceof Constr, `plift: expected Constr`);
     assert(
       this.index === c.index,
@@ -29,8 +29,8 @@ export class PConstr<PT extends PData>
   };
 
   public pconstant = (
-    data: RecordOf<PLifted<PT>>,
-  ): Constr<PConstanted<PT>> => {
+    data: RecordOf<PLifted<PFields>>,
+  ): Constr<PConstanted<PFields>> => {
     assert(data instanceof Object, `PConstr.pconstant: expected Object`);
     assert(
       !(data instanceof Array),
@@ -49,11 +49,11 @@ export class PConstr<PT extends PData>
     return new PConstr(index, pfields);
   }
 
-  public genData = (): RecordOf<PLifted<PT>> => {
+  public genData = (): RecordOf<PLifted<PFields>> => {
     return this.pfields.genData();
   };
 
-  public genPlutusData = (): Constr<PConstanted<PT>> => {
+  public genPlutusData = (): Constr<PConstanted<PFields>> => {
     // console.log("constr");
     const fields = this.pfields.genPlutusData();
     return new Constr(this.index, fields);

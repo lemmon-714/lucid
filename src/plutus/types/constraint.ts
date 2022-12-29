@@ -1,15 +1,15 @@
 import { PConstanted, PData, PLifted, PType } from "./type.ts";
 
-export class PConstraint<PT extends PData>
-  implements PType<PConstanted<PT>, PLifted<PT>> {
+export class PConstraint<PInner extends PData>
+  implements PType<PConstanted<PInner>, PLifted<PInner>> {
   constructor(
-    public pinner: PT,
-    public asserts: ((i: PLifted<PT>) => void)[],
-    public genInnerData: () => PLifted<PT>,
-    public genInnerPlutusData: () => PConstanted<PT>,
+    public pinner: PInner,
+    public asserts: ((i: PLifted<PInner>) => void)[],
+    public genInnerData: () => PLifted<PInner>,
+    public genInnerPlutusData: () => PConstanted<PInner>,
   ) {}
 
-  public plift = (data: PConstanted<PT>): PLifted<PT> => {
+  public plift = (data: PConstanted<PInner>): PLifted<PInner> => {
     const plifted = this.pinner.plift(data);
     if (this.asserts) {
       this.asserts.forEach((assert) => {
@@ -19,20 +19,20 @@ export class PConstraint<PT extends PData>
     return plifted;
   };
 
-  public pconstant = (data: PLifted<PT>): PConstanted<PT> => {
+  public pconstant = (data: PLifted<PInner>): PConstanted<PInner> => {
     if (this.asserts) {
       this.asserts.forEach((assert) => {
         assert(data);
       });
     }
-    return this.pinner.pconstant(data) as PConstanted<PT>;
+    return this.pinner.pconstant(data) as PConstanted<PInner>;
   };
 
-  public genData = (): PLifted<PT> => {
+  public genData = (): PLifted<PInner> => {
     return this.genInnerData();
   };
 
-  public genPlutusData = (): PConstanted<PT> => {
+  public genPlutusData = (): PConstanted<PInner> => {
     return this.genInnerPlutusData();
   };
 }

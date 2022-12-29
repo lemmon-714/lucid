@@ -3,16 +3,16 @@ import { Generators, gMaxLength, maybeNdef } from "../../mod.ts";
 import { genNonNegative } from "../../utils/generators.ts";
 import { PConstanted, PData, PLifted, PType } from "./type.ts";
 
-export class PList<PT extends PData>
-  implements PType<Array<PConstanted<PT>>, Array<PLifted<PT>>> {
+export class PList<PElem extends PData>
+  implements PType<Array<PConstanted<PElem>>, Array<PLifted<PElem>>> {
   constructor(
-    public pelem: PType<PConstanted<PT>, PLifted<PT>>,
+    public pelem: PType<PConstanted<PElem>, PLifted<PElem>>,
     public length?: number,
   ) {
     assert(!length || length >= 0, "negative length");
   }
 
-  public plift = (l: Array<PConstanted<PT>>): Array<PLifted<PT>> => {
+  public plift = (l: Array<PConstanted<PElem>>): Array<PLifted<PElem>> => {
     assert(l instanceof Array, `List.plift: expected List: ${l}`);
     assert(
       !this.length || this.length === l.length,
@@ -22,7 +22,9 @@ export class PList<PT extends PData>
     return l_;
   };
 
-  public pconstant = (data: Array<PLifted<PT>>): Array<PConstanted<PT>> => {
+  public pconstant = (
+    data: Array<PLifted<PElem>>,
+  ): Array<PConstanted<PElem>> => {
     assert(data instanceof Array, `pconstant: expected Array`);
     assert(
       !this.length || this.length === data.length,
@@ -41,19 +43,19 @@ export class PList<PT extends PData>
     return new PList(pelem, length);
   }
 
-  public genData = (): PLifted<PT>[] => {
+  public genData = (): PLifted<PElem>[] => {
     const length = this.length ? this.length : genNonNegative(gMaxLength);
-    const l = new Array<PLifted<PT>>();
+    const l = new Array<PLifted<PElem>>();
     for (let i = 0; i < length; i++) {
       l.push(this.pelem.genData());
     }
     return l;
   };
 
-  public genPlutusData = (): PConstanted<PT>[] => {
+  public genPlutusData = (): PConstanted<PElem>[] => {
     // console.log("map");
     const length = this.length ? this.length : genNonNegative(gMaxLength);
-    const l = new Array<PConstanted<PT>>();
+    const l = new Array<PConstanted<PElem>>();
     for (let i = 0; i < length; i++) {
       l.push(this.pelem.genPlutusData());
     }

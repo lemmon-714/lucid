@@ -2,19 +2,21 @@ import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { Generators, genName, genNonNegative } from "../../mod.ts";
 import { PConstanted, PData, PLifted, PType, RecordOf } from "./type.ts";
 
-export class PRecord<PT extends PData>
-  implements PType<Array<PConstanted<PT>>, RecordOf<PLifted<PT>>> {
+export class PRecord<PFields extends PData>
+  implements PType<Array<PConstanted<PFields>>, RecordOf<PLifted<PFields>>> {
   constructor(
-    public pfields: RecordOf<PType<PConstanted<PT>, PLifted<PT>>>,
+    public pfields: RecordOf<PType<PConstanted<PFields>, PLifted<PFields>>>,
   ) {
   }
 
-  public plift = (l: Array<PConstanted<PT>>): RecordOf<PLifted<PT>> => {
+  public plift = (
+    l: Array<PConstanted<PFields>>,
+  ): RecordOf<PLifted<PFields>> => {
     assert(
       l instanceof Array,
       `Record.plift: expected List: ${l}`,
     );
-    const r: Record<string, PLifted<PT>> = {};
+    const r: Record<string, PLifted<PFields>> = {};
 
     const pfields = Object.entries(this.pfields);
     l.forEach((value, i) => {
@@ -26,15 +28,15 @@ export class PRecord<PT extends PData>
   };
 
   public pconstant = (
-    data: RecordOf<PLifted<PT>>,
-  ): Array<PConstanted<PT>> => {
+    data: RecordOf<PLifted<PFields>>,
+  ): Array<PConstanted<PFields>> => {
     assert(data instanceof Object, `PRecord.pconstant: expected Object`);
     assert(
       !(data instanceof Array),
       `PRecord.pconstant: unexpected Array: ${data}`,
     );
 
-    const l = new Array<PConstanted<PT>>();
+    const l = new Array<PConstanted<PFields>>();
     Object.entries(data).forEach(([key, value]) => {
       const pfield = this.pfields[key];
       assert(pfield, `field not found: ${key}`);
@@ -58,17 +60,17 @@ export class PRecord<PT extends PData>
     return new PRecord(pfields);
   }
 
-  public genData = (): RecordOf<PLifted<PT>> => {
-    const r: RecordOf<PLifted<PT>> = {};
+  public genData = (): RecordOf<PLifted<PFields>> => {
+    const r: RecordOf<PLifted<PFields>> = {};
     Object.entries(this.pfields).forEach(([key, pfield]) => {
       r[key] = pfield.genData();
     });
     return r;
   };
 
-  public genPlutusData = (): PConstanted<PT>[] => {
+  public genPlutusData = (): PConstanted<PFields>[] => {
     // console.log("record");
-    const l = new Array<PConstanted<PT>>();
+    const l = new Array<PConstanted<PFields>>();
     Object.entries(this.pfields).forEach(([_, pfield]) => {
       l.push(pfield.genPlutusData());
     });
