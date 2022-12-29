@@ -1,5 +1,5 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { Generators, genName, genNumber, PlutusData } from "../../mod.ts";
+import { Generators, genName, genNonNegative, PlutusData } from "../../mod.ts";
 import { PType, RecordOf } from "./type.ts";
 
 export class PRecord<P extends PlutusData, T>
@@ -57,7 +57,7 @@ export class PRecord<P extends PlutusData, T>
     maxLength: number,
   ): PRecord<PlutusData, any> {
     const pfields: RecordOf<PType<PlutusData, any>> = {};
-    const maxi = genNumber(maxLength);
+    const maxi = genNonNegative(maxLength);
     for (let i = 0; i < maxi; i++) {
       const key = genName();
       const pvalue = gen.generate(maxDepth, maxLength);

@@ -1,11 +1,6 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import {
-  Generators,
-  genNumber,
-  gMaxLength,
-  maybeNdef,
-  PlutusData,
-} from "../../mod.ts";
+import { Generators, gMaxLength, maybeNdef, PlutusData } from "../../mod.ts";
+import { genNonNegative } from "../../utils/generators.ts";
 import { PType } from "./type.ts";
 
 export class PList<P extends PlutusData, T>
@@ -44,13 +39,13 @@ export class PList<P extends PlutusData, T>
     maxDepth: number,
     maxLength: number,
   ): PList<PlutusData, any> {
-    const length = maybeNdef(genNumber(maxLength));
+    const length = maybeNdef(genNonNegative(maxLength));
     const pelem = gen.generate(maxDepth, maxLength);
     return new PList(pelem, length);
   }
 
   public genData = (): T[] => {
-    const length = this.length ? this.length : genNumber(gMaxLength);
+    const length = this.length ? this.length : genNonNegative(gMaxLength);
     const l = new Array<T>();
     for (let i = 0; i < length; i++) {
       l.push(this.pelem.genData());
@@ -60,7 +55,7 @@ export class PList<P extends PlutusData, T>
 
   public genPlutusData = (): P[] => {
     // console.log("map");
-    const length = this.length ? this.length : genNumber(gMaxLength);
+    const length = this.length ? this.length : genNonNegative(gMaxLength);
     const l = new Array<P>();
     for (let i = 0; i < length; i++) {
       l.push(this.pelem.genPlutusData());

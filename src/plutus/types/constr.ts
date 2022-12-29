@@ -1,5 +1,10 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { Generators, genNumber, maxInteger, PlutusData } from "../../mod.ts";
+import {
+  Generators,
+  genNonNegative,
+  maxInteger,
+  PlutusData,
+} from "../../mod.ts";
 import { Constr } from "../data.ts";
 import { PRecord } from "./record.ts";
 import { PType, RecordOf } from "./type.ts";
@@ -38,7 +43,7 @@ export class PConstr<P extends PlutusData, T>
     maxDepth: number,
     maxLength: number,
   ): PConstr<PlutusData, any> {
-    const index = genNumber(maxInteger);
+    const index = genNonNegative(maxInteger);
     const pfields = PRecord.genPType(gen, maxDepth, maxLength);
     return new PConstr(index, pfields);
   }

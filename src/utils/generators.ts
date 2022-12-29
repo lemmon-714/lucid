@@ -44,12 +44,21 @@ export function maybeNdef<T>(value: T) {
   }
 }
 
-export function genNumber(maxValue: number): number {
+export function genPositive(maxValue: number): number {
+  return 1 + Math.floor(Math.random() * maxValue);
+}
+
+export function genNonNegative(maxValue: number): number {
   if (Math.random() > zeroChance) {
-    return Math.floor(Math.random() * maxValue);
+    return genPositive(maxValue);
   } else {
     return 0;
   }
+}
+
+export function genNumber(maxValue: number): number {
+  const n = genNonNegative(maxValue);
+  return randomChoice([n, -n]);
 }
 
 export function genString(alph: string): string {
@@ -62,7 +71,7 @@ export function genString(alph: string): string {
     }
   }
   const l: string[] = [];
-  const maxi = 8 * genNumber(maxStringBytes);
+  const maxi = 8 * genNonNegative(maxStringBytes);
   for (let i = 0; i < maxi; i++) {
     l.push(genChar());
   }

@@ -1,7 +1,7 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import {
   Generators,
-  genNumber,
+  genNonNegative,
   gMaxLength,
   maybeNdef,
   PlutusData,
@@ -55,13 +55,13 @@ export class PMap<KP extends PlutusData, VP extends PlutusData, KT, VT>
   ): PMap<PlutusData, PlutusData, any, any> {
     const pkey = gen.generate(maxDepth - 1, maxLength);
     const pvalue = gen.generate(maxDepth - 1, maxLength);
-    const size = maybeNdef(genNumber(maxLength));
+    const size = maybeNdef(genNonNegative(maxLength));
 
     return new PMap(pkey, pvalue, size);
   }
 
   public genData = (): Map<KT, VT> => {
-    const size = this.size ? this.size : genNumber(gMaxLength);
+    const size = this.size ? this.size : genNonNegative(gMaxLength);
     const m = new Map<KT, VT>();
     const keyStrings = new Array<string>();
     let timeout = 10;
@@ -85,7 +85,7 @@ export class PMap<KP extends PlutusData, VP extends PlutusData, KT, VT>
 
   public genPlutusData = (): Map<KP, VP> => {
     // console.log("map");
-    const size = this.size ? this.size : genNumber(gMaxLength);
+    const size = this.size ? this.size : genNonNegative(gMaxLength);
     const m = new Map<KP, VP>();
     const keyStrings = new Array<string>();
     let timeout = 10;

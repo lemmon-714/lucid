@@ -1,5 +1,11 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { Generators, genNumber, PlutusData, randomChoice } from "../../mod.ts";
+import {
+  Generators,
+  genNonNegative,
+  genPositive,
+  PlutusData,
+  randomChoice,
+} from "../../mod.ts";
 import { Constr } from "../data.ts";
 
 import { PRecord } from "./record.ts";
@@ -36,7 +42,7 @@ export class PSum<P extends PlutusData, T>
     maxLength: number,
   ): PSum<PlutusData, any> {
     const pconstrs = new Array<PRecord<PlutusData, any>>();
-    const maxi = genNumber(maxLength) + 1;
+    const maxi = genPositive(maxLength);
     for (let i = 0; i < maxi; i++) {
       pconstrs.push(PRecord.genPType(gen, maxDepth, maxLength));
     }
@@ -49,7 +55,7 @@ export class PSum<P extends PlutusData, T>
 
   public genPlutusData = (): Constr<P> => {
     // console.log("sum");
-    const index = genNumber(this.pconstrs.length);
+    const index = genNonNegative(this.pconstrs.length);
     const constr = this.pconstrs[index];
     assert(
       constr,
