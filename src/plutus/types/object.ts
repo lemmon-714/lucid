@@ -1,4 +1,8 @@
 import { Generators } from "../../mod.ts";
+import { PByteString } from "./bytestring.ts";
+import { PInteger } from "./integer.ts";
+import { PList } from "./list.ts";
+import { PMap } from "./map.ts";
 import { PRecord } from "./record.ts";
 import { PConstanted, PData, PLifted, PType, RecordOf } from "./type.ts";
 
@@ -31,8 +35,18 @@ export class PObject<
     gen: Generators,
     maxDepth: number,
     maxLength: number,
-  ): PObject<PData, abstract new (...args: PLifted<PData>) => Object> {
-    throw new Error("not implemented");
+  ): PObject<PData, ExampleClass> {
+    return new PObject(
+      new PRecord({
+        "s": new PByteString(),
+        "i": new PInteger(),
+        "ls": new PList(new PByteString()),
+        "li": new PList(new PInteger()),
+        "msli": new PMap(new PByteString(), new PList(new PInteger())),
+        "mlis": new PMap(new PList(new PInteger()), new PByteString()),
+      }),
+      ExampleClass,
+    );
   }
 
   public genData = (): O => {
@@ -48,4 +62,15 @@ export class PObject<
     const record = this.precord.genPlutusData();
     return Object.values(record);
   };
+}
+
+class ExampleClass {
+  constructor(
+    public s: string,
+    public i: bigint,
+    public ls: string[],
+    public li: bigint[],
+    public msli: Map<string, bigint[]>,
+    public mlis: Map<bigint[], string>,
+  ) {}
 }

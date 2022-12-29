@@ -10,6 +10,7 @@ import {
   PList,
   PlutusData,
   PMap,
+  PObject,
   PRecord,
   PType,
   toPlutusData,
@@ -32,7 +33,7 @@ Deno.test("parsing property tests", () => {
       PConstr.genPType,
       PRecord.genPType,
       // PSum.genPType,
-      // PObject.genPType,
+      PObject.genPType,
     ],
   );
 
