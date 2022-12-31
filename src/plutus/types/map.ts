@@ -95,34 +95,34 @@ export class PMap<
     return PMap.genMap(this.pkey, this.pvalue, size);
   };
 
-  static genPlutusMap<PKey extends PData, PValue extends PData>(
-    pkey: PKey,
-    pvalue: PValue,
-    size: number,
-  ): Map<PConstanted<PKey>, PConstanted<PValue>> {
-    const m = new Map<PConstanted<PKey>, PConstanted<PValue>>();
-    const keyStrings = new Array<string>();
-    let timeout = 10;
-    while (m.size < size) {
-      const key = pkey.genPlutusData() as PConstanted<PKey>;
-      const keyString = Data.to(key);
-      if (!keyStrings.includes(keyString)) {
-        keyStrings.push(keyString);
-        const value = pvalue.genPlutusData() as PConstanted<PValue>;
-        m.set(key, value);
-      } else if (timeout-- < 0) {
-        throw new Error(
-          `timeout: ${JSON.stringify(keyStrings)}\nkey: ${
-            JSON.stringify(pkey)
-          }`,
-        );
-      }
-    }
-    return m;
-  }
+  // static genPlutusMap<PKey extends PData, PValue extends PData>(
+  //   pkey: PKey,
+  //   pvalue: PValue,
+  //   size: number,
+  // ): Map<PConstanted<PKey>, PConstanted<PValue>> {
+  //   const m = new Map<PConstanted<PKey>, PConstanted<PValue>>();
+  //   const keyStrings = new Array<string>();
+  //   let timeout = 10;
+  //   while (m.size < size) {
+  //     const key = pkey.genPlutusData() as PConstanted<PKey>;
+  //     const keyString = Data.to(key);
+  //     if (!keyStrings.includes(keyString)) {
+  //       keyStrings.push(keyString);
+  //       const value = pvalue.genPlutusData() as PConstanted<PValue>;
+  //       m.set(key, value);
+  //     } else if (timeout-- < 0) {
+  //       throw new Error(
+  //         `timeout: ${JSON.stringify(keyStrings)}\nkey: ${
+  //           JSON.stringify(pkey)
+  //         }`,
+  //       );
+  //     }
+  //   }
+  //   return m;
+  // }
 
-  public genPlutusData(): Map<PConstanted<PKey>, PConstanted<PValue>> {
-    const size = this.size ? this.size : genNonNegative(gMaxLength);
-    return PMap.genPlutusMap(this.pkey, this.pvalue, size);
-  }
+  // public genPlutusData(): Map<PConstanted<PKey>, PConstanted<PValue>> {
+  //   const size = this.size ? this.size : genNonNegative(gMaxLength);
+  //   return PMap.genPlutusMap(this.pkey, this.pvalue, size);
+  // }
 }

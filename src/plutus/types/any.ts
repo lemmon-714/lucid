@@ -21,7 +21,7 @@ export class PAny<P extends PlutusData> implements PType<P, P> {
     throw new Error("not implemented");
   }
 
-  public genPlutusData(): P {
-    throw new Error("not implemented");
-  }
+  // public genPlutusData(): P {
+  //   throw new Error("not implemented");
+  // }
 }

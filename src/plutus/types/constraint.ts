@@ -32,9 +32,9 @@ export class PConstraint<PInner extends PData>
     return this.genInnerData();
   };
 
-  public genPlutusData = (): PConstanted<PInner> => {
-    return this.genInnerPlutusData();
-  };
+  // public genPlutusData = (): PConstanted<PInner> => {
+  //   return this.genInnerPlutusData();
+  // };
 
   // public merge = (other: PConstraint<PInner>): PConstraint<PInner> => {
   //   const asserts = this.asserts.concat(other.asserts);

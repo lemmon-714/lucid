@@ -42,11 +42,11 @@ Deno.test("parsing property tests", () => {
     console.log(i);
     try {
       const ptype = gen.generate(gMaxDepth, gMaxLength);
-      const anyData = ptype.genData();
-      const plutusData = ptype.genPlutusData();
+      const data = ptype.genData();
+      const plutusData = ptype.pconstant(data);
 
       testDataParse(plutusData, dataErrs);
-      testPTypeParse(plutusData, anyData, ptype, ptypeErrs);
+      testPTypeParse(plutusData, data, ptype, ptypeErrs);
     } catch (err) {
       logError(err, otherErrs);
     }
@@ -70,13 +70,12 @@ function testDataParse(plutusData: PlutusData, errors: Map<string, number>) {
 
 function testPTypeParse(
   plutusData: PlutusData,
-  anyData: any,
+  data: any,
   ptype: PType<PlutusData, any>,
   errors: Map<string, number>,
 ) {
   try {
-    assertEquals(plutusData, ptype.pconstant(ptype.plift(plutusData)));
-    assertEquals(anyData, ptype.plift(ptype.pconstant(anyData)));
+    assertEquals(data, ptype.plift(plutusData));
   } catch (err) {
     logError(err, errors);
   }

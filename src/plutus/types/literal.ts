@@ -5,21 +5,23 @@ import { PConstanted, PData, PLifted, PType } from "./type.ts";
 export class PLiteral<PT extends PData>
   implements PType<PConstanted<PT>, PLifted<PT>> {
   //   public pliteral: PT;
-  public literal: PLifted<PT>;
+  // public literal: PLifted<PT>;
   public plutusLiteral: PConstanted<PT>;
   constructor(
     public pliteral: PT,
-    literal?: PLifted<PT>,
-    plutusLiteral?: PConstanted<PT>,
+    public literal: PLifted<PT>,
+    // plutusLiteral?: PConstanted<PT>,
   ) {
-    assert(
-      literal || plutusLiteral,
-      "Must provide either literal or plutusLiteral",
-    );
-    this.literal = literal ?? pliteral.plift(plutusLiteral!);
-    this.plutusLiteral = plutusLiteral ??
-      pliteral.pconstant(literal!) as PLifted<PT>;
+    this.plutusLiteral = pliteral.pconstant(literal) as PConstanted<PT>;
   }
+  //   assert(
+  //     literal || plutusLiteral,
+  //     "Must provide either literal or plutusLiteral",
+  //   );
+  //   this.literal = literal ?? pliteral.plift(plutusLiteral!);
+  //   this.plutusLiteral = plutusLiteral ??
+  //     pliteral.pconstant(literal!) as PLifted<PT>;
+  // }
 
   plift = (l: PConstanted<PT>): PLifted<PT> => {
     assert(l === this.plutusLiteral, "Literal does not match");
@@ -32,7 +34,7 @@ export class PLiteral<PT extends PData>
   genData = (): PLifted<PT> => {
     return this.literal;
   };
-  genPlutusData = (): PConstanted<PT> => {
-    return this.plutusLiteral;
-  };
+  // genPlutusData = (): PConstanted<PT> => {
+  //   return this.plutusLiteral;
+  // };
 }

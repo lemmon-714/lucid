@@ -1,8 +1,7 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { genNumber } from "../../mod.ts";
-import { PConstraint } from "./constraint.ts";
 
-import { PType, PTypes } from "./type.ts";
+import { PType } from "./type.ts";
 
 export class PInteger implements PType<bigint, bigint> {
   public plift = (i: bigint): bigint => {
@@ -26,9 +25,8 @@ export class PInteger implements PType<bigint, bigint> {
     return BigInt(genNumber());
   };
 
-  public genPlutusData(): bigint {
-    // console.log("integer");
-    return this.genData();
-  }
+  // public genPlutusData(): bigint {
+  //   // console.log("integer");
+  //   return this.genData();
+  // }
 }
-PTypes["bigint"] = new PInteger();

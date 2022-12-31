@@ -67,12 +67,12 @@ export class PRecord<PFields extends PData>
     return r;
   };
 
-  public genPlutusData = (): PConstanted<PFields>[] => {
-    // console.log("record");
-    const l = new Array<PConstanted<PFields>>();
-    Object.entries(this.pfields).forEach(([_, pfield]) => {
-      l.push(pfield.genPlutusData());
-    });
-    return l;
-  };
+  // public genPlutusData = (): PConstanted<PFields>[] => {
+  //   // console.log("record");
+  //   const l = new Array<PConstanted<PFields>>();
+  //   Object.entries(this.pfields).forEach(([_, pfield]) => {
+  //     l.push(pfield.genPlutusData());
+  //   });
+  //   return l;
+  // };
 }

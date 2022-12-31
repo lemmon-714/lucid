@@ -8,14 +8,8 @@ T is the equivalent concrete type.
 */
 
 import { PlutusData } from "../../types/types.ts";
-import { Generators } from "../../utils/generators.ts";
 import { Constr } from "../data.ts";
-import { PAny } from "./any.ts";
-import { PByteString } from "./bytestring.ts";
-import { PInteger } from "./integer.ts";
-import { PList } from "./list.ts";
-import { PMap } from "./map.ts";
-import { PObject } from "./object.ts";
+import { PLiteral } from "./literal.ts";
 
 export type RecordOf<T> = Record<string, T>;
 export type PData = PType<PlutusData, any>;
@@ -39,7 +33,9 @@ export interface PType<P extends PlutusData, T> {
   pconstant(data: T): P;
   // abstract genPType(gen: Generators, maxDepth: number, maxLength: number): PType<PlutusData, any>; // static
   genData(): T;
-  genPlutusData(): P;
+  // genPlutusData(): P;
 }
 export type Constructor<T> = new (...args: any[]) => T;
 export const PTypes: RecordOf<PData> = {};
+
+export type PMaybeLiteral<T extends PData> = T | PLiteral<T>;

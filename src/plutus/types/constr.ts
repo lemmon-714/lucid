@@ -1,14 +1,8 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import {
-  Generators,
-  genNonNegative,
-  maxInteger,
-  PData,
-  PlutusData,
-} from "../../mod.ts";
+import { Generators, genNonNegative, maxInteger, PData } from "../../mod.ts";
 import { Constr } from "../data.ts";
 import { PRecord } from "./record.ts";
-import { PConstanted, PLifted, PType, PTypes, RecordOf } from "./type.ts";
+import { PConstanted, PLifted, PType, RecordOf } from "./type.ts";
 
 export class PConstr<PFields extends PData>
   implements PType<Constr<PConstanted<PFields>>, RecordOf<PLifted<PFields>>> {
@@ -53,10 +47,9 @@ export class PConstr<PFields extends PData>
     return this.pfields.genData();
   };
 
-  public genPlutusData = (): Constr<PConstanted<PFields>> => {
-    // console.log("constr");
-    const fields = this.pfields.genPlutusData();
-    return new Constr(this.index, fields);
-  };
+  // public genPlutusData = (): Constr<PConstanted<PFields>> => {
+  //   // console.log("constr");
+  //   const fields = this.pfields.genPlutusData();
+  //   return new Constr(this.index, fields);
+  // };
 }
-Object.defineProperty(PTypes, "constr", PConstr);

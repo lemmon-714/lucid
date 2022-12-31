@@ -53,15 +53,15 @@ export class PSum<PFields extends PData>
     return randomChoice(this.pconstrs).genData();
   };
 
-  public genPlutusData = (): Constr<PConstanted<PFields>> => {
-    // console.log("sum");
-    const index = genNonNegative(this.pconstrs.length);
-    const constr = this.pconstrs[index];
-    assert(
-      constr,
-      `constr not found (index ${index} of ${this.pconstrs.length})`,
-    );
-    const fields = constr.genPlutusData();
-    return new Constr(index, fields);
-  };
+  // public genPlutusData = (): Constr<PConstanted<PFields>> => {
+  //   // console.log("sum");
+  //   const index = genNonNegative(this.pconstrs.length);
+  //   const constr = this.pconstrs[index];
+  //   assert(
+  //     constr,
+  //     `constr not found (index ${index} of ${this.pconstrs.length})`,
+  //   );
+  //   const fields = constr.genPlutusData();
+  //   return new Constr(index, fields);
+  // };
 }

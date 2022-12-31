@@ -59,8 +59,8 @@ export class PList<PElem extends PData>
     return PList.genList(this.pelem.genData, length);
   };
 
-  public genPlutusData = (): PConstanted<PElem>[] => {
-    const length = this.length ? this.length : genNonNegative(gMaxLength);
-    return PList.genList(this.pelem.genPlutusData, length);
-  };
+  // public genPlutusData = (): PConstanted<PElem>[] => {
+  //   const length = this.length ? this.length : genNonNegative(gMaxLength);
+  //   return PList.genList(this.pelem.genPlutusData, length);
+  // };
 }

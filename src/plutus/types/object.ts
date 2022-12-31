@@ -88,8 +88,17 @@ export class PObject<O extends Object> implements PType<PlutusOfObject<O>, O> {
     maxDepth: number,
     maxLength: number,
   ): PObject<ExampleClass> {
-    throw new Error("Not implemented");
-    // return new PObject(ExampleClass);
+    const precord = new PRecord<PData>(
+      {
+        s: PByteString.genPType(),
+        i: PInteger.genPType(),
+        ls: PList.genPType(gen, maxDepth, maxLength),
+        li: PList.genPType(gen, maxDepth, maxLength),
+        msli: PMap.genPType(gen, maxDepth, maxLength),
+        mlis: PMap.genPType(gen, maxDepth, maxLength),
+      },
+    );
+    return new PObject(precord, ExampleClass);
   }
 
   public genData = (): O => {
@@ -102,19 +111,19 @@ export class PObject<O extends Object> implements PType<PlutusOfObject<O>, O> {
     return o;
   };
 
-  public genPlutusData = (): PlutusOfObject<O> => {
-    const record = this.precord.genPlutusData();
-    return Object.values(record) as PlutusOfObject<O>;
-  };
+  // public genPlutusData = (): PlutusOfObject<O> => {
+  //   const record = this.precord.genPlutusData();
+  //   return Object.values(record) as PlutusOfObject<O>;
+  // };
 }
 
 class ExampleClass {
   constructor(
     public s: string,
     public i: bigint,
-    // public ls: string[],
-    // public li: bigint[],
-    // public msli: Map<string, bigint[]>,
-    // public mlis: Map<bigint[], string>,
+    public ls: string[],
+    public li: bigint[],
+    public msli: Map<string, bigint[]>,
+    public mlis: Map<bigint[], string>,
   ) {}
 }
