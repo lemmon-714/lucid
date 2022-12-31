@@ -6,7 +6,7 @@ export class PConstraint<PInner extends PData>
     public pinner: PInner,
     public asserts: ((i: PLifted<PInner>) => void)[],
     public genInnerData: () => PLifted<PInner>,
-    public genInnerPlutusData: () => PConstanted<PInner>,
+    // public genInnerPlutusData: () => PConstanted<PInner>,
   ) {}
 
   public plift = (data: PConstanted<PInner>): PLifted<PInner> => {
