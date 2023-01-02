@@ -55,7 +55,7 @@ export class PObject<O extends Object> implements PType<PlutusOfObject<O>, O> {
   // public precord: PRecord<PData>;
   constructor(
     public precord: PRecord<PData>, // TODO WIP
-    public anew: new (...args: any[]) => O,
+    public O: new (...args: any[]) => O,
   ) {
     // const record: RecordOf<PData> = {};
     // const obj = new anew();
@@ -72,7 +72,7 @@ export class PObject<O extends Object> implements PType<PlutusOfObject<O>, O> {
       l as Array<PConstanted<PFieldsOf<O>>>,
     );
     const args = Object.values(record);
-    return new (this.anew)(...args as AttributeTypes<ExampleClass>[]) as O;
+    return new (this.O)(...args as AttributeTypes<ExampleClass>[]) as O;
   };
 
   public pconstant = (
@@ -104,7 +104,7 @@ export class PObject<O extends Object> implements PType<PlutusOfObject<O>, O> {
   public genData = (): O => {
     const record = this.precord.genData();
     // console.log(record, JSON.stringify(record));
-    const o = new this.anew(
+    const o = new this.O(
       ...Object.values(record),
     );
     // console.log(o, JSON.stringify(o));
