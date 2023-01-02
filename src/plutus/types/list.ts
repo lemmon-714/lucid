@@ -6,7 +6,7 @@ import { PConstanted, PData, PLifted, PType } from "./type.ts";
 export class PList<PElem extends PData>
   implements PType<Array<PConstanted<PElem>>, Array<PLifted<PElem>>> {
   constructor(
-    public pelem: PType<PConstanted<PElem>, PLifted<PElem>>,
+    public pelem: PElem,
     public length?: number,
   ) {
     assert(!length || length >= 0, "negative length");
@@ -30,7 +30,7 @@ export class PList<PElem extends PData>
       !this.length || this.length === data.length,
       `pconstant: wrong length`,
     );
-    return data.map(this.pelem.pconstant);
+    return data.map(this.pelem.pconstant) as Array<PConstanted<PElem>>;
   };
 
   static genPType(

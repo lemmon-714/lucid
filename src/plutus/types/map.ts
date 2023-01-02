@@ -20,8 +20,8 @@ export class PMap<
     Map<PLifted<PKey>, PLifted<PValue>>
   > {
   constructor(
-    public pkey: PType<PConstanted<PKey>, PLifted<PKey>>,
-    public pvalue: PType<PConstanted<PValue>, PLifted<PValue>>,
+    public pkey: PKey,
+    public pvalue: PValue,
     public size?: number,
   ) {}
 
@@ -47,7 +47,10 @@ export class PMap<
     assert(!this.size || this.size === data.size, `pconstant: wrong size`);
     const m = new Map<PConstanted<PKey>, PConstanted<PValue>>();
     data.forEach((value, key) => {
-      m.set(this.pkey.pconstant(key), this.pvalue.pconstant(value));
+      m.set(
+        this.pkey.pconstant(key) as PConstanted<PKey>,
+        this.pvalue.pconstant(value) as PConstanted<PValue>,
+      );
     });
     return m;
   };

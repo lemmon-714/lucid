@@ -6,7 +6,7 @@ const zeroChance = 0.1;
 const ndefChance = 0.1;
 export const maxInteger = Number.MAX_SAFE_INTEGER;
 const maxStringBytes = 100; // TODO higher
-export const gMaxLength = 12;
+export const gMaxLength = 4;
 export const gMaxDepth = 2;
 
 export function randomChoice<T>(alternatives: T[]): T {
@@ -45,7 +45,7 @@ export function maybeNdef<T>(value: T) {
 }
 
 export function genPositive(maxValue?: number): number {
-  return 1 + Math.floor(Math.random() * (maxValue ?? maxInteger));
+  return 1 + Math.floor(Math.random() * (maxValue ? maxValue - 1 : maxInteger));
 }
 
 export function genNonNegative(maxValue?: number): number {
