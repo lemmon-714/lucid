@@ -25,7 +25,7 @@ export class PMap<
     public pkey: PKey,
     public pvalue: PValue,
     public size?: number,
-    public keys?: PLifted<PKey>,
+    public keys?: PLifted<PKey>[],
   ) {
     if (keys) {
       if (size) {
