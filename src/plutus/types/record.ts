@@ -5,7 +5,7 @@ import { PConstanted, PData, PLifted, PType, RecordOf } from "./type.ts";
 export class PRecord<PFields extends PData>
   implements PType<Array<PConstanted<PFields>>, RecordOf<PLifted<PFields>>> {
   constructor(
-    public pfields: RecordOf<PType<PConstanted<PFields>, PLifted<PFields>>>,
+    public pfields: RecordOf<PFields>,
   ) {}
 
   public plift = (
@@ -39,7 +39,7 @@ export class PRecord<PFields extends PData>
     Object.entries(data).forEach(([key, value]) => {
       const pfield = this.pfields[key];
       assert(pfield, `field not found: ${key}`);
-      l.push(pfield.pconstant(value));
+      l.push(pfield.pconstant(value) as PConstanted<PFields>);
     });
     return l;
   };
