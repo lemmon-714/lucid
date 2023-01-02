@@ -47,6 +47,14 @@ export class PRecord<PFields extends PData>
     return l;
   };
 
+  public genData = (): RecordOf<PLifted<PFields>> => {
+    const r: RecordOf<PLifted<PFields>> = {};
+    Object.entries(this.pfields).forEach(([key, pfield]) => {
+      r[key] = pfield.genData();
+    });
+    return r;
+  };
+
   static genPType(
     gen: Generators,
     maxDepth: number,
@@ -61,12 +69,4 @@ export class PRecord<PFields extends PData>
     }
     return new PRecord(pfields);
   }
-
-  public genData = (): RecordOf<PLifted<PFields>> => {
-    const r: RecordOf<PLifted<PFields>> = {};
-    Object.entries(this.pfields).forEach(([key, pfield]) => {
-      r[key] = pfield.genData();
-    });
-    return r;
-  };
 }

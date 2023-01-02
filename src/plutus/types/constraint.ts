@@ -1,3 +1,4 @@
+import { Generators } from "../../mod.ts";
 import { PConstanted, PData, PLifted, PType } from "./type.ts";
 
 export class PConstraint<PInner extends PData>
@@ -18,7 +19,7 @@ export class PConstraint<PInner extends PData>
     return plifted;
   };
 
-  public pconstant = (data: PLifted<PInner>): PConstanted<PInner> => {
+  public pconstant = (data: PLifted<PInner>): PConstanted<any> => {
     if (this.asserts) {
       this.asserts.forEach((assert) => {
         assert(data);
@@ -30,4 +31,14 @@ export class PConstraint<PInner extends PData>
   public genData = (): PLifted<PInner> => {
     return this.genInnerData();
   };
+
+  static genPType(
+    gen: Generators,
+    maxDepth: number,
+    maxLength: number,
+  ): PConstraint<PData> {
+    const pinner = gen.generate(maxDepth, maxLength);
+    const genInnerData = pinner.genData;
+    return new PConstraint(pinner, [], genInnerData);
+  }
 }

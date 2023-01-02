@@ -16,16 +16,11 @@ export class PByteString implements PType<string, string> {
     return data;
   };
 
-  static genPType(): PByteString {
-    return new PByteString();
-  }
-
   public genData(): string {
     return genString("abcdef");
   }
 
-  // public genPlutusData(): string {
-  //   // console.log("bytestring");
-  //   return this.genData();
-  // }
+  static genPType(): PByteString {
+    return new PByteString();
+  }
 }

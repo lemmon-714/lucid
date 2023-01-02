@@ -1,6 +1,13 @@
 // TODO consider generating wrong cases as well
 
-import { PByteString, PInteger, PlutusData, PRecord, PType } from "../mod.ts";
+import {
+  PByteString,
+  PData,
+  PInteger,
+  PlutusData,
+  PRecord,
+  PType,
+} from "../mod.ts";
 
 const zeroChance = 0.1;
 const ndefChance = 0.1;
@@ -89,18 +96,18 @@ export function genName(): string {
 export class Generators {
   constructor(
     public primitives: Array<
-      () => PType<PlutusData, any>
+      () => PData
     >,
     public containers: Array<
       (
         gen: Generators,
         maxDepth: number,
         maxLength: number,
-      ) => PType<PlutusData, any>
+      ) => PData
     >,
   ) {}
 
-  public generate(maxDepth: number, maxLength: number): PType<PlutusData, any> {
+  public generate(maxDepth: number, maxLength: number): PData {
     const generator = maxDepth > 0
       ? randomChoice([
         ...this.primitives,

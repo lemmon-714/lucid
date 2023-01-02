@@ -76,19 +76,6 @@ export class PMap<
     return m;
   };
 
-  static genPType(
-    gen: Generators,
-    maxDepth: number,
-    maxLength: number,
-  ): PMap<PData, PData> {
-    const pkey = gen.generate(maxDepth - 1, maxLength);
-    const pvalue = gen.generate(maxDepth - 1, maxLength);
-    const keys = maybeNdef(() => PMap.genKeys(pkey))?.();
-    const size = maybeNdef(keys?.length ?? genNonNegative(maxLength));
-
-    return new PMap(pkey, pvalue, size, keys);
-  }
-
   static genKeys<PKey extends PData>(
     pkey: PKey,
     size = genNonNegative(gMaxLength),
@@ -138,4 +125,17 @@ export class PMap<
       return PMap.genMap(this.pkey, this.pvalue, size);
     }
   };
+
+  static genPType(
+    gen: Generators,
+    maxDepth: number,
+    maxLength: number,
+  ): PMap<PData, PData> {
+    const pkey = gen.generate(maxDepth - 1, maxLength);
+    const pvalue = gen.generate(maxDepth - 1, maxLength);
+    const keys = maybeNdef(() => PMap.genKeys(pkey))?.();
+    const size = maybeNdef(keys?.length ?? genNonNegative(maxLength));
+
+    return new PMap(pkey, pvalue, size, keys);
+  }
 }

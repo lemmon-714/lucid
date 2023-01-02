@@ -33,6 +33,10 @@ export class PConstr<PFields extends PData>
     return new Constr(this.index, this.pfields.pconstant(data));
   };
 
+  public genData = (): RecordOf<PLifted<PFields>> => {
+    return this.pfields.genData();
+  };
+
   static genPType(
     gen: Generators,
     maxDepth: number,
@@ -42,14 +46,4 @@ export class PConstr<PFields extends PData>
     const pfields = PRecord.genPType(gen, maxDepth, maxLength);
     return new PConstr(index, pfields);
   }
-
-  public genData = (): RecordOf<PLifted<PFields>> => {
-    return this.pfields.genData();
-  };
-
-  // public genPlutusData = (): Constr<PConstanted<PFields>> => {
-  //   // console.log("constr");
-  //   const fields = this.pfields.genPlutusData();
-  //   return new Constr(this.index, fields);
-  // };
 }

@@ -6,6 +6,7 @@ import {
   gMaxLength,
   PByteString,
   PConstr,
+  PConstraint,
   PInteger,
   PList,
   PlutusData,
@@ -15,6 +16,7 @@ import {
   PRecord,
   PType,
 } from "../src/mod.ts";
+import { PLiteral } from "../src/plutus/types/literal.ts";
 
 Deno.test("parsing property tests", () => {
   const gen = new Generators(
@@ -38,6 +40,8 @@ export const lucidContainerGenerators = [
   PMapRecord.genPType,
   // PSum.genPType,
   PObject.genPType,
+  PLiteral.genPType,
+  PConstraint.genPType,
 ];
 
 export function propertyTestPTypesParsing(gen: Generators) {

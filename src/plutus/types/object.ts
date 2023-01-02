@@ -83,6 +83,16 @@ export class PObject<O extends Object> implements PType<PlutusOfObject<O>, O> {
     ) as PlutusOfObject<O>;
   };
 
+  public genData = (): O => {
+    const record = this.precord.genData();
+    // console.log(record, JSON.stringify(record));
+    const o = new this.O(
+      ...Object.values(record),
+    );
+    // console.log(o, JSON.stringify(o));
+    return o;
+  };
+
   static genPType(
     gen: Generators,
     maxDepth: number,
@@ -100,21 +110,6 @@ export class PObject<O extends Object> implements PType<PlutusOfObject<O>, O> {
     );
     return new PObject(precord, ExampleClass);
   }
-
-  public genData = (): O => {
-    const record = this.precord.genData();
-    // console.log(record, JSON.stringify(record));
-    const o = new this.O(
-      ...Object.values(record),
-    );
-    // console.log(o, JSON.stringify(o));
-    return o;
-  };
-
-  // public genPlutusData = (): PlutusOfObject<O> => {
-  //   const record = this.precord.genPlutusData();
-  //   return Object.values(record) as PlutusOfObject<O>;
-  // };
 }
 
 class ExampleClass {

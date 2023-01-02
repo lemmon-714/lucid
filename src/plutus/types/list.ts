@@ -33,16 +33,6 @@ export class PList<PElem extends PData>
     return data.map(this.pelem.pconstant) as Array<PConstanted<PElem>>;
   };
 
-  static genPType(
-    gen: Generators,
-    maxDepth: number,
-    maxLength: number,
-  ): PList<PData> {
-    const length = maybeNdef(genNonNegative(maxLength));
-    const pelem = gen.generate(maxDepth, maxLength);
-    return new PList(pelem, length);
-  }
-
   static genList<T>(
     elemGenerator: () => T,
     length: number,
@@ -59,8 +49,13 @@ export class PList<PElem extends PData>
     return PList.genList(this.pelem.genData, length);
   };
 
-  // public genPlutusData = (): PConstanted<PElem>[] => {
-  //   const length = this.length ? this.length : genNonNegative(gMaxLength);
-  //   return PList.genList(this.pelem.genPlutusData, length);
-  // };
+  static genPType(
+    gen: Generators,
+    maxDepth: number,
+    maxLength: number,
+  ): PList<PData> {
+    const length = maybeNdef(genNonNegative(maxLength));
+    const pelem = gen.generate(maxDepth, maxLength);
+    return new PList(pelem, length);
+  }
 }

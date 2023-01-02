@@ -1,6 +1,7 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import {
   Generators,
+  genName,
   genNonNegative,
   genPositive,
   PlutusData,
@@ -36,32 +37,22 @@ export class PSum<PFields extends PData>
     throw new Error(`pconstant: not implemented`); // TODO something about matching maybe
   };
 
-  static genPType(
-    gen: Generators,
-    maxDepth: number,
-    maxLength: number,
-  ): PSum<PData> {
-    const pconstrs = new Array<PRecord<PData>>();
-    const maxi = genPositive(maxLength);
-    for (let i = 0; i < maxi; i++) {
-      pconstrs.push(PRecord.genPType(gen, maxDepth, maxLength));
-    }
-    return new PSum(pconstrs);
-  }
-
   public genData = (): RecordOf<PLifted<PFields>> => {
     return randomChoice(this.pconstrs).genData();
   };
 
-  // public genPlutusData = (): Constr<PConstanted<PFields>> => {
-  //   // console.log("sum");
-  //   const index = genNonNegative(this.pconstrs.length);
-  //   const constr = this.pconstrs[index];
-  //   assert(
-  //     constr,
-  //     `constr not found (index ${index} of ${this.pconstrs.length})`,
-  //   );
-  //   const fields = constr.genPlutusData();
-  //   return new Constr(index, fields);
-  // };
+  static genPType(
+    gen: Generators,
+    maxDepth: number,
+    maxLength: number,
+  ): PRecord<PData> {
+    const pfields: RecordOf<PData> = {};
+    const maxi = genNonNegative(maxLength);
+    for (let i = 0; i < maxi; i++) {
+      const key = genName();
+      const pvalue = gen.generate(maxDepth, maxLength);
+      pfields[key] = pvalue;
+    }
+    return new PRecord(pfields);
+  }
 }

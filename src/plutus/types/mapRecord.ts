@@ -55,6 +55,14 @@ export class PMapRecord<PFields extends PData>
     return m;
   };
 
+  public genData = (): Map<string, PLifted<PFields>> => {
+    const m = new Map<string, PLifted<PFields>>();
+    Object.entries(this.pfields).forEach(([key, pfield]) => {
+      m.set(key, pfield.genData());
+    });
+    return m;
+  };
+
   static genPType(
     gen: Generators,
     maxDepth: number,
@@ -70,12 +78,4 @@ export class PMapRecord<PFields extends PData>
     }
     return new PMapRecord(pfields);
   }
-
-  public genData = (): Map<string, PLifted<PFields>> => {
-    const m = new Map<string, PLifted<PFields>>();
-    Object.entries(this.pfields).forEach(([key, pfield]) => {
-      m.set(key, pfield.genData());
-    });
-    return m;
-  };
 }

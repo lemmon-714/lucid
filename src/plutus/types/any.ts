@@ -13,15 +13,11 @@ export class PAny<P extends PlutusData> implements PType<P, P> {
     return data;
   }
 
-  static genPType(): PAny<PlutusData> {
-    return new PAny();
-  }
-
   public genData(): P {
     throw new Error("not implemented");
   }
 
-  // public genPlutusData(): P {
-  //   throw new Error("not implemented");
-  // }
+  static genPType(): PAny<PlutusData> {
+    return new PAny();
+  }
 }

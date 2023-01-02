@@ -17,16 +17,11 @@ export class PInteger implements PType<bigint, bigint> {
     return data;
   };
 
-  static genPType(): PInteger {
-    return new PInteger();
-  }
-
   public genData = (): bigint => {
     return BigInt(genNumber());
   };
 
-  // public genPlutusData(): bigint {
-  //   // console.log("integer");
-  //   return this.genData();
-  // }
+  static genPType(): PInteger {
+    return new PInteger();
+  }
 }
