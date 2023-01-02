@@ -6,7 +6,6 @@ export class PConstraint<PInner extends PData>
     public pinner: PInner,
     public asserts: ((i: PLifted<PInner>) => void)[],
     public genInnerData: () => PLifted<PInner>,
-    // public genInnerPlutusData: () => PConstanted<PInner>,
   ) {}
 
   public plift = (data: PConstanted<PInner>): PLifted<PInner> => {
@@ -31,18 +30,4 @@ export class PConstraint<PInner extends PData>
   public genData = (): PLifted<PInner> => {
     return this.genInnerData();
   };
-
-  // public genPlutusData = (): PConstanted<PInner> => {
-  //   return this.genInnerPlutusData();
-  // };
-
-  // public merge = (other: PConstraint<PInner>): PConstraint<PInner> => {
-  //   const asserts = this.asserts.concat(other.asserts);
-  //   return new PConstraint(
-  //     this.pinner,
-  //     asserts,
-  //     this.genInnerData,
-  //     this.genInnerPlutusData,
-  //   );
-  // };
 }

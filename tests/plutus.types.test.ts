@@ -14,30 +14,36 @@ import {
   PObject,
   PRecord,
   PType,
-  toPlutusData,
 } from "../src/mod.ts";
 
 Deno.test("parsing property tests", () => {
+  const gen = new Generators(
+    lucidPrimitiveGenerators,
+    lucidContainerGenerators,
+  );
+  propertyTestPTypesParsing(gen);
+});
+
+export const lucidPrimitiveGenerators = [
+  // PData.genPType,
+  PInteger.genPType,
+  PByteString.genPType,
+];
+
+export const lucidContainerGenerators = [
+  PList.genPType,
+  PMap.genPType,
+  PConstr.genPType,
+  PRecord.genPType,
+  PMapRecord.genPType,
+  // PSum.genPType,
+  PObject.genPType,
+];
+
+export function propertyTestPTypesParsing(gen: Generators) {
   const dataErrs = new Map<string, number>();
   const ptypeErrs = new Map<string, number>();
   const otherErrs = new Map<string, number>();
-
-  const gen = new Generators(
-    [
-      // PData.genPType,
-      PInteger.genPType,
-      PByteString.genPType,
-    ],
-    [
-      PList.genPType,
-      PMap.genPType,
-      PConstr.genPType,
-      PRecord.genPType,
-      PMapRecord.genPType,
-      // PSum.genPType,
-      PObject.genPType,
-    ],
-  );
 
   const iterations = 100;
   for (let i = 0; i < iterations; i++) {
@@ -60,7 +66,7 @@ Deno.test("parsing property tests", () => {
 
   console.log(correct + " x correct");
   assertEquals(correct, iterations);
-});
+}
 
 function testDataParse(plutusData: PlutusData, errors: Map<string, number>) {
   try {

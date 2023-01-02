@@ -39,12 +39,12 @@ export class PMapRecord<PFields extends PData>
   ): Map<string, PConstanted<PFields>> => {
     assert(data instanceof Map, `PMapRecord.pconstant: expected Map`);
 
-    const pfieldsNames = Object.getOwnPropertyNames(this.pfields);
-    const dataFieldsNames = [...data.keys()].toString();
-    assert(
-      pfieldsNames.toString() === dataFieldsNames.toString(),
-      "PMapRecord.pconstant: fields mismatch",
-    );
+    // const pfieldsNames = Object.getOwnPropertyNames(this.pfields);
+    // const dataFieldsNames = [...data.keys()].toString();
+    // assert(
+    //   pfieldsNames.toString() === dataFieldsNames.toString(),
+    //   "PMapRecord.pconstant: fields mismatch",
+    // );
 
     const m = new Map<string, PConstanted<PFields>>();
     data.forEach((value, key) => {
