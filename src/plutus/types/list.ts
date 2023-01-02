@@ -18,8 +18,8 @@ export class PList<PElem extends PData>
       !this.length || this.length === l.length,
       `plift: wrong length - ${this.length} vs. ${l.length}`,
     );
-    const l_ = l.map((elem) => this.pelem.plift(elem));
-    return l_;
+    const data = l.map((elem) => this.pelem.plift(elem));
+    return data;
   };
 
   public pconstant = (

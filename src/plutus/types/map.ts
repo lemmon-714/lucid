@@ -45,14 +45,14 @@ export class PMap<
       `plift: wrong size`,
     );
 
-    const p = new Map<PLifted<PKey>, PLifted<PValue>>();
+    const data = new Map<PLifted<PKey>, PLifted<PValue>>();
     let i = 0;
     m.forEach((value: PLifted<PKey>, key: PLifted<PValue>) => {
       const k = this.pkey.plift(key);
       assert(!this.keys || this.keys[i++] === k, `plift: wrong key`);
-      p.set(k, this.pvalue.plift(value));
+      data.set(k, this.pvalue.plift(value));
     });
-    return p;
+    return data;
   };
 
   public pconstant = (
