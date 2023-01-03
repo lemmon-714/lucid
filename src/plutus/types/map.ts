@@ -88,7 +88,7 @@ export class PMap<
   ): PLifted<PKey>[] {
     const keys = new Array<PLifted<PKey>>();
     const keyStrings = new Array<string>();
-    let timeout = 10;
+    let timeout = 10000;
     while (keys.length < size) {
       const key = pkey.genData();
       const keyString = Data.to(toPlutusData(key));
@@ -99,7 +99,7 @@ export class PMap<
         throw new Error(
           `timeout: ${JSON.stringify(keyStrings)}\nkey: ${
             JSON.stringify(pkey)
-          }`,
+          }\n size: ${size}`,
         );
       }
     }
@@ -135,12 +135,11 @@ export class PMap<
   static genPType(
     gen: Generators,
     maxDepth: bigint,
-    maxLength: bigint,
   ): PMap<PData, PData> {
-    const pkey = gen.generate(maxDepth - 1n, maxLength);
-    const pvalue = gen.generate(maxDepth - 1n, maxLength);
+    const pkey = gen.generate(maxDepth - 1n);
+    const pvalue = gen.generate(maxDepth - 1n);
     const keys = maybeNdef(() => PMap.genKeys(pkey))?.();
-    const size = maybeNdef(BigInt(keys?.length ?? genNonNegative(maxLength)));
+    const size = maybeNdef(BigInt(keys?.length ?? genNonNegative(gMaxLength)));
 
     return new PMap(pkey, pvalue, size, keys);
   }

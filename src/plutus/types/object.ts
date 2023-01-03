@@ -1,4 +1,4 @@
-import { Constr, Generators, PlutusData } from "../../mod.ts";
+import { Constr, Generators } from "../../mod.ts";
 import { PAny } from "./any.ts";
 import { PByteString } from "./bytestring.ts";
 import { PConstr } from "./constr.ts";
@@ -13,7 +13,6 @@ import {
   PlutusOf,
   PlutusOfObject,
   PType,
-  PTypes,
   RecordOf,
 } from "./type.ts";
 
@@ -26,30 +25,10 @@ type PTypeOf<T> = T extends bigint ? PInteger
   : PAny<PlutusOf<T>>;
 
 type PFieldsOf<O> = PTypeOf<O[keyof O]>;
-type PRecordOf<O> = RecordOf<PFieldsOf<O>>;
-
-type DSGsfgs = PRecordOf<ExampleClass>;
 
 type AttributeTypes<T> = {
   [K in keyof T]: T[K] extends object ? AttributeTypes<T[K]> : T[K];
 }[keyof T];
-
-// for a given type T, create a type of all the types of the fields of T
-type FieldsOf<T> = {
-  [K in keyof T]: T[K] extends object ? FieldsOf<T[K]> : T[K];
-};
-// type Constructor<T> = new (...args: any[]) => T;
-
-type AAA = FieldsOf<ExampleClass>;
-type BBB = AttributeTypes<ExampleClass>;
-type CCC = Array<AttributeTypes<ExampleClass>>;
-
-type Test = PFieldsOf<ExampleClass>;
-type T2 = PLifted<Test>;
-type T3 = Array<PLifted<Test>>;
-type T4 = Array<PLifted<PFieldsOf<ExampleClass>>>;
-
-const T: T4 = [BigInt(3), "aaa"];
 
 export class PObject<O extends Object> implements PType<PlutusOfObject<O>, O> {
   // public precord: PRecord<PData>;
@@ -96,16 +75,15 @@ export class PObject<O extends Object> implements PType<PlutusOfObject<O>, O> {
   static genPType(
     gen: Generators,
     maxDepth: bigint,
-    maxLength: bigint,
-  ): PObject<ExampleClass> {
+  ): PObject<any> {
     const precord = new PRecord<PData>(
       {
         s: PByteString.genPType(),
         i: PInteger.genPType(),
-        ls: PList.genPType(gen, maxDepth, maxLength),
-        li: PList.genPType(gen, maxDepth, maxLength),
-        msli: PMap.genPType(gen, maxDepth, maxLength),
-        mlis: PMap.genPType(gen, maxDepth, maxLength),
+        ls: PList.genPType(gen, maxDepth),
+        li: PList.genPType(gen, maxDepth),
+        msli: PMap.genPType(gen, maxDepth),
+        mlis: PMap.genPType(gen, maxDepth),
       },
     );
     return new PObject(precord, ExampleClass);

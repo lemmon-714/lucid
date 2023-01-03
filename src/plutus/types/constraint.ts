@@ -32,9 +32,8 @@ export class PConstraint<PInner extends PData> {
   static genPType(
     gen: Generators,
     maxDepth: bigint,
-    maxLength: bigint,
   ): PConstraint<PData> {
-    const pinner = gen.generate(maxDepth, maxLength);
+    const pinner = gen.generate(maxDepth);
     const genInnerData = pinner.genData;
     return new PConstraint(pinner, [], genInnerData);
   }

@@ -1,5 +1,11 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { fromHex, Generators, genNonNegative, toHex } from "../../mod.ts";
+import {
+  fromHex,
+  Generators,
+  genNonNegative,
+  gMaxLength,
+  toHex,
+} from "../../mod.ts";
 import { PByteString } from "./bytestring.ts";
 import { PConstanted, PData, PLifted, PType, RecordOf } from "./type.ts";
 
@@ -66,14 +72,13 @@ export class PMapRecord<PFields extends PData>
   static genPType(
     gen: Generators,
     maxDepth: bigint,
-    maxLength: bigint,
   ): PMapRecord<PData> {
     const pfields: RecordOf<PData> = {};
-    const maxi = genNonNegative(maxLength);
+    const maxi = genNonNegative(gMaxLength);
     const pbytes = new PByteString();
     for (let i = 0; i < maxi; i++) {
       const key = pbytes.genData();
-      const pvalue = gen.generate(maxDepth, maxLength);
+      const pvalue = gen.generate(maxDepth);
       pfields[key] = pvalue;
     }
     return new PMapRecord(pfields);

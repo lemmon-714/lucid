@@ -40,10 +40,9 @@ export class PConstr<PFields extends PData>
   static genPType(
     gen: Generators,
     maxDepth: bigint,
-    maxLength: bigint,
   ): PConstr<PData> {
     const index = genNonNegative(maxInteger);
-    const pfields = PRecord.genPType(gen, maxDepth, maxLength);
+    const pfields = PRecord.genPType(gen, maxDepth);
     return new PConstr(index, pfields);
   }
 }

@@ -52,10 +52,9 @@ export class PList<PElem extends PData>
   static genPType(
     gen: Generators,
     maxDepth: bigint,
-    maxLength: bigint,
   ): PList<PData> {
-    const length = maybeNdef(genNonNegative(maxLength));
-    const pelem = gen.generate(maxDepth, maxLength);
+    const length = maybeNdef(genNonNegative(gMaxLength));
+    const pelem = gen.generate(maxDepth);
     return new PList(pelem, length);
   }
 }

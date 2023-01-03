@@ -1,5 +1,5 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { Generators, genName, genNonNegative } from "../../mod.ts";
+import { Generators, genName, genNonNegative, gMaxLength } from "../../mod.ts";
 import { PConstanted, PData, PLifted, PType, RecordOf } from "./type.ts";
 
 export class PRecord<PFields extends PData>
@@ -58,13 +58,12 @@ export class PRecord<PFields extends PData>
   static genPType(
     gen: Generators,
     maxDepth: bigint,
-    maxLength: bigint,
   ): PRecord<PData> {
     const pfields: RecordOf<PData> = {};
-    const maxi = genNonNegative(maxLength);
+    const maxi = genNonNegative(gMaxLength);
     for (let i = 0; i < maxi; i++) {
       const key = genName();
-      const pvalue = gen.generate(maxDepth, maxLength);
+      const pvalue = gen.generate(maxDepth);
       pfields[key] = pvalue;
     }
     return new PRecord(pfields);

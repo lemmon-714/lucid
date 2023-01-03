@@ -27,9 +27,8 @@ export class PLiteral<PT extends PData>
   static genPType(
     gen: Generators,
     maxDepth: bigint,
-    maxLength: bigint,
   ): PLiteral<PData> {
-    const pliteral = gen.generate(maxDepth, maxLength);
+    const pliteral = gen.generate(maxDepth);
     const literal = pliteral.genData();
     return new PLiteral(pliteral, literal);
   }

@@ -3,12 +3,19 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import {
   PByteString,
+  PConstr,
+  PConstraint,
   PData,
   PInteger,
+  PList,
   PlutusData,
+  PMap,
+  PMapRecord,
+  PObject,
   PRecord,
   PType,
 } from "../mod.ts";
+import { PLiteral } from "../plutus/types/literal.ts";
 
 const zeroChance = 0.1;
 const ndefChance = 0.1;
@@ -111,20 +118,18 @@ export class Generators {
       (
         gen: Generators,
         maxDepth: bigint,
-        maxLength: bigint,
       ) => PData
     >,
   ) {}
 
-  public generate(maxDepth: bigint, maxLength: bigint): PData {
+  public generate(maxDepth: bigint): PData {
     const generator = maxDepth > 0
       ? randomChoice([
         ...this.primitives,
         ...this.containers,
       ])
       : randomChoice(this.primitives);
-    // console.log(maxDepth, maxLength);
-    return generator(this, max(maxDepth - 1n, 0n), maxLength);
+    return generator(this, max(maxDepth - 1n, 0n));
   }
 }
 
