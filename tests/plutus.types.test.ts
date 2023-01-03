@@ -9,9 +9,9 @@ import {
   PMapRecord,
   PObject,
   PRecord,
-} from "../src/mod.ts";
+  propertyTestPTypesParsing,
+} from "../mod.ts";
 import { PLiteral } from "../src/plutus/types/literal.ts";
-import { propertyTestPTypesParsing } from "./props.ts";
 
 Deno.test("parsing property tests", () => {
   const gen = new Generators(

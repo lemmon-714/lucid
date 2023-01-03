@@ -1,6 +1,10 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { Generators, gMaxLength, maybeNdef } from "../../mod.ts";
-import { genNonNegative } from "../../utils/generators.ts";
+import {
+  Generators,
+  genNonNegative,
+  gMaxLength,
+  maybeNdef,
+} from "../../mod.ts";
 import { f, PConstanted, PData, PLifted, PType, t } from "./type.ts";
 
 export class PList<PElem extends PData>

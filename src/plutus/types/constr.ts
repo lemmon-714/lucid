@@ -1,8 +1,8 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { Generators, genNonNegative, maxInteger, PData } from "../../mod.ts";
+import { Generators, genNonNegative, maxInteger } from "../../mod.ts";
 import { Constr } from "../data.ts";
 import { PRecord } from "./record.ts";
-import { f, PConstanted, PLifted, PType, RecordOf, t } from "./type.ts";
+import { f, PConstanted, PData, PLifted, PType, RecordOf, t } from "./type.ts";
 
 export class PConstr<PFields extends PData>
   implements PType<Constr<PConstanted<PFields>>, RecordOf<PLifted<PFields>>> {

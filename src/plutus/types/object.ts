@@ -1,4 +1,5 @@
-import { Constr, Generators } from "../../mod.ts";
+import { Generators } from "../../mod.ts";
+import { Constr } from "../data.ts";
 import { PAny } from "./any.ts";
 import { PByteString } from "./bytestring.ts";
 import { PConstr } from "./constr.ts";

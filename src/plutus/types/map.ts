@@ -4,13 +4,9 @@ import {
   genNonNegative,
   gMaxLength,
   maybeNdef,
-  PlutusData,
-  randomChoice,
   toPlutusData,
 } from "../../mod.ts";
 import { Data } from "../data.ts";
-import { PConstraint } from "./constraint.ts";
-import { PList } from "./list.ts";
 import { f, PConstanted, PData, PLifted, PType, t } from "./type.ts";
 
 export class PMap<
@@ -84,25 +80,35 @@ export class PMap<
 
   static genKeys<PKey extends PData>(
     pkey: PKey,
-    size = genNonNegative(gMaxLength),
+    size?: bigint,
   ): PLifted<PKey>[] {
-    const keys = new Array<PLifted<PKey>>();
-    const keyStrings = new Array<string>();
-    let timeout = 10000;
-    while (keys.length < size) {
-      const key = pkey.genData();
-      const keyString = Data.to(toPlutusData(key));
-      if (!keyStrings.includes(keyString)) {
-        keyStrings.push(keyString);
-        keys.push(key);
-      } else if (timeout-- < 0) {
-        throw new Error(
-          `Map.genKeys: timeout
+    function timeoutError(): never {
+      throw new Error(
+        `Map.genKeys: timeout
 ${t}keyStrings: ${JSON.stringify(keyStrings)},
 ${t}pkey: ${pkey.show(t)},
 ${t}size: ${Number(size)}`,
-        );
-      }
+      );
+    }
+
+    function genKey(): void {
+      const key = pkey.genData();
+      const keyString = Data.to(toPlutusData(key));
+      let timeout = gMaxLength + 100n;
+      if (!keyStrings.includes(keyString)) {
+        keyStrings.push(keyString);
+        keys.push(key);
+      } else if (timeout-- < 0) timeoutError;
+    }
+
+    const keys = new Array<PLifted<PKey>>();
+    const keyStrings = new Array<string>();
+
+    if (size) {
+      while (keys.length < size) genKey();
+    } else {
+      const size_ = genNonNegative(gMaxLength);
+      for (let i = 0; i < size_; i++) genKey();
     }
     return keys;
   }

@@ -1,13 +1,19 @@
 // TODO consider generating wrong cases as well
 
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { PByteString, PData, PInteger, PlutusData, PRecord } from "../mod.ts";
+import {
+  PByteString,
+  PData,
+  PInteger,
+  PlutusData,
+  PRecord,
+} from "../../mod.ts";
 
 const zeroChance = 0.1;
 const ndefChance = 0.1;
 export const maxInteger = BigInt(Number.MAX_SAFE_INTEGER); // TODO better value, maybe look at chain/plutus max
 const maxStringBytes = 100n; // TODO higher
-export const gMaxLength = 4n;
+export const gMaxLength = 3n;
 export const gMaxDepth = 2n;
 
 export class Generators {

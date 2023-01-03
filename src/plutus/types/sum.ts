@@ -3,9 +3,7 @@ import {
   Generators,
   genName,
   genNonNegative,
-  genPositive,
   gMaxLength,
-  PlutusData,
   randomChoice,
 } from "../../mod.ts";
 import { Constr } from "../data.ts";

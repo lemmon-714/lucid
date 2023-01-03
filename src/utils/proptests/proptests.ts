@@ -1,5 +1,6 @@
 import { assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { Data, Generators, gMaxDepth, PlutusData, PType } from "../src/mod.ts";
+import { Data, PlutusData, PType } from "../../mod.ts";
+import { Generators, gMaxDepth } from "./generators.ts";
 
 export function propertyTestPTypesParsing(gen: Generators, iterations: number) {
   const dataErrs = new Map<string, number>();
@@ -59,7 +60,7 @@ function logError(err: Error, record: Map<string, number>) {
 function printErrs(record: Map<string, number>, name: string): number {
   let total = 0;
   record.forEach((num: number, err: string) => {
-    console.error(num + " x " + err);
+    console.error(`\n${num} x ${err}`);
     total += num;
   });
   if (total) {
