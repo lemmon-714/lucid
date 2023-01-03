@@ -11,7 +11,7 @@ import {
 import { Data } from "../data.ts";
 import { PConstraint } from "./constraint.ts";
 import { PList } from "./list.ts";
-import { PConstanted, PData, PLifted, PType } from "./type.ts";
+import { f, PConstanted, PData, PLifted, PType, t } from "./type.ts";
 
 export class PMap<
   PKey extends PData,
@@ -97,9 +97,10 @@ export class PMap<
         keys.push(key);
       } else if (timeout-- < 0) {
         throw new Error(
-          `timeout: ${JSON.stringify(keyStrings)}\nkey: ${
-            JSON.stringify(pkey)
-          }\n size: ${size}`,
+          `Map.genKeys: timeout
+${t}keyStrings: ${JSON.stringify(keyStrings)},
+${t}pkey: ${pkey.show(t)},
+${t}size: ${Number(size)}`,
         );
       }
     }
@@ -131,6 +132,30 @@ export class PMap<
       return PMap.genMap(this.pkey, this.pvalue, size);
     }
   };
+
+  public show(tabs = ""): string {
+    const tt = tabs + t;
+    const ttf = tt + f;
+    const ttft = ttf + t;
+
+    const thiskeys = ["a", "b", "c"];
+    const keys = thiskeys
+      ? thiskeys.length > 0
+        ? `[\n` + thiskeys.map((k) => {
+          const key = this.pkey.pconstant(k);
+          return ttft + f +
+            (typeof key === "bigint" ? key.toString() : JSON.stringify(key));
+        }).join(",\n") + `\n${ttft}]`
+        : "[]"
+      : "undefined";
+
+    return `PMap (
+${ttf}pkey: ${this.pkey.show(ttf)},
+${ttf}pvalue: ${this.pvalue.show(ttf)},
+${ttf}size?: ${this.size},
+${ttf}keys?: ${keys}
+${tt})`;
+  }
 
   static genPType(
     gen: Generators,

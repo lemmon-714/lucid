@@ -1,5 +1,5 @@
 import { Generators } from "../../mod.ts";
-import { PConstanted, PData, PLifted, PType } from "./type.ts";
+import { f, PConstanted, PData, PLifted, PType, t } from "./type.ts";
 
 export class PConstraint<PInner extends PData> {
   // implements PType<PConstanted<PInner>, PLifted<PInner>> {
@@ -27,6 +27,23 @@ export class PConstraint<PInner extends PData> {
 
   public genData = (): PLifted<PInner> => {
     return this.genInnerData();
+  };
+
+  public show = (tabs = ""): string => {
+    const tt = tabs + t;
+    const ttf = tt + f;
+
+    const asserts = `[\n
+      ${ttf}` + this.asserts.map((a) => {
+      return `(${a.toString()})`;
+    }).join(`,\n${ttf}`) + `\n
+    ${ttf}]`;
+
+    return `PConstraint (
+${ttf}pinner: ${this.pinner.show(ttf)},
+${ttf}asserts: \${asserts},
+${ttf}genInnerData: ${this.genInnerData.toString()}
+${tt})`;
   };
 
   static genPType(

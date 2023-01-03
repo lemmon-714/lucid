@@ -7,7 +7,7 @@ import {
   toHex,
 } from "../../mod.ts";
 import { PByteString } from "./bytestring.ts";
-import { PConstanted, PData, PLifted, PType, RecordOf } from "./type.ts";
+import { f, PConstanted, PData, PLifted, PType, RecordOf, t } from "./type.ts";
 
 export class PMapRecord<PFields extends PData>
   implements
@@ -67,6 +67,21 @@ export class PMapRecord<PFields extends PData>
       m.set(key, pfield.genData());
     });
     return m;
+  };
+
+  public show = (tabs = ""): string => {
+    const tt = tabs + t;
+    const ttf = tt + f;
+    const ttff = ttf + f;
+
+    const fields = Object.entries(this.pfields).map(([key, pfield]) => {
+      return `${ttff}${key}: ${pfield.show(ttff)}`;
+    });
+    return `PMapRecord (
+${ttf}pfields: {
+${fields.join(",\n")}
+${ttf}}
+${tt})`;
   };
 
   static genPType(

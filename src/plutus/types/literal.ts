@@ -1,6 +1,6 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { Generators, PlutusData } from "../../mod.ts";
-import { PConstanted, PData, PLifted, PType } from "./type.ts";
+import { f, PConstanted, PData, PLifted, PType, t } from "./type.ts";
 
 export class PLiteral<PT extends PData>
   implements PType<PConstanted<PT>, PLifted<PT>> {
@@ -22,6 +22,16 @@ export class PLiteral<PT extends PData>
   };
   public genData = (): PLifted<PT> => {
     return this.literal;
+  };
+
+  public show = (tabs = ""): string => {
+    const tt = tabs + t;
+    const ttf = tt + f;
+
+    return `PLiteral (
+${ttf}plutusLiteral: ${this.pliteral.show(ttf)},
+${ttf}literal: TODO implement
+${tt})`;
   };
 
   static genPType(

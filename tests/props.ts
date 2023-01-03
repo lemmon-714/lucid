@@ -7,7 +7,8 @@ export function propertyTestPTypesParsing(gen: Generators, iterations: number) {
   const otherErrs = new Map<string, number>();
 
   for (let i = 0; i < iterations; i++) {
-    console.log(i);
+    const errs = dataErrs.size + ptypeErrs.size + otherErrs.size;
+    console.log(`${i}` + (errs ? ` (${errs} errors)` : ""));
     try {
       const ptype = gen.generate(gMaxDepth);
       const data = ptype.genData();

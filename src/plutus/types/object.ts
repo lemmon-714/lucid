@@ -7,6 +7,7 @@ import { PList } from "./list.ts";
 import { PMap } from "./map.ts";
 import { PRecord } from "./record.ts";
 import {
+  f,
   PConstanted,
   PData,
   PLifted,
@@ -14,6 +15,7 @@ import {
   PlutusOfObject,
   PType,
   RecordOf,
+  t,
 } from "./type.ts";
 
 type PTypeOf<T> = T extends bigint ? PInteger
@@ -70,6 +72,16 @@ export class PObject<O extends Object> implements PType<PlutusOfObject<O>, O> {
     );
     // console.log(o, JSON.stringify(o));
     return o;
+  };
+
+  public show = (tabs = ""): string => {
+    const tt = tabs + t;
+    const ttf = tt + f;
+
+    return `PObject (
+${ttf}precord: ${this.precord.show(ttf)},
+${ttf}O: ${this.O.name}
+${tt})`;
   };
 
   static genPType(

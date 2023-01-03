@@ -1,21 +1,7 @@
 // TODO consider generating wrong cases as well
 
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import {
-  PByteString,
-  PConstr,
-  PConstraint,
-  PData,
-  PInteger,
-  PList,
-  PlutusData,
-  PMap,
-  PMapRecord,
-  PObject,
-  PRecord,
-  PType,
-} from "../mod.ts";
-import { PLiteral } from "../plutus/types/literal.ts";
+import { PByteString, PData, PInteger, PlutusData, PRecord } from "../mod.ts";
 
 const zeroChance = 0.1;
 const ndefChance = 0.1;
@@ -23,6 +9,30 @@ export const maxInteger = BigInt(Number.MAX_SAFE_INTEGER); // TODO better value,
 const maxStringBytes = 100n; // TODO higher
 export const gMaxLength = 4n;
 export const gMaxDepth = 2n;
+
+export class Generators {
+  constructor(
+    public primitives: Array<
+      () => PData
+    >,
+    public containers: Array<
+      (
+        gen: Generators,
+        maxDepth: bigint,
+      ) => PData
+    >,
+  ) {}
+
+  public generate(maxDepth: bigint): PData {
+    const generator = maxDepth > 0
+      ? randomChoice([
+        ...this.primitives,
+        ...this.containers,
+      ])
+      : randomChoice(this.primitives);
+    return generator(this, max(maxDepth - 1n, 0n));
+  }
+}
 
 export function max(a: bigint, b: bigint): bigint {
   return a > b ? a : b;
@@ -107,30 +117,6 @@ export function genName(): string {
   const upper = lower.toUpperCase();
   const alph = lower + upper; // TODO special characters
   return genString(alph);
-}
-
-export class Generators {
-  constructor(
-    public primitives: Array<
-      () => PData
-    >,
-    public containers: Array<
-      (
-        gen: Generators,
-        maxDepth: bigint,
-      ) => PData
-    >,
-  ) {}
-
-  public generate(maxDepth: bigint): PData {
-    const generator = maxDepth > 0
-      ? randomChoice([
-        ...this.primitives,
-        ...this.containers,
-      ])
-      : randomChoice(this.primitives);
-    return generator(this, max(maxDepth - 1n, 0n));
-  }
 }
 
 // sample named record

@@ -20,6 +20,10 @@ export class PByteString implements PType<string, string> {
     return genString("abcdef");
   }
 
+  public show = (): string => {
+    return `PByteString`;
+  };
+
   static genPType(): PByteString {
     return new PByteString();
   }

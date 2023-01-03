@@ -42,6 +42,10 @@ export class PSum<PFields extends PData>
     return randomChoice(this.pconstrs).genData();
   };
 
+  public show(): string {
+    throw new Error(`show: not implemented`);
+  }
+
   static genPType(
     gen: Generators,
     maxDepth: bigint,

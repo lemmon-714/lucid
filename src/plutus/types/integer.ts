@@ -1,7 +1,7 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { genNumber } from "../../mod.ts";
 
-import { PType } from "./type.ts";
+import { PType, t } from "./type.ts";
 
 export class PInteger implements PType<bigint, bigint> {
   public plift = (i: bigint): bigint => {
@@ -19,6 +19,10 @@ export class PInteger implements PType<bigint, bigint> {
 
   public genData = (): bigint => {
     return genNumber();
+  };
+
+  public show = (): string => {
+    return `PInteger`;
   };
 
   static genPType(): PInteger {

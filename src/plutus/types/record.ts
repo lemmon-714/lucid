@@ -1,6 +1,6 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { Generators, genName, genNonNegative, gMaxLength } from "../../mod.ts";
-import { PConstanted, PData, PLifted, PType, RecordOf } from "./type.ts";
+import { PConstanted, PData, PLifted, PType, RecordOf, t } from "./type.ts";
 
 export class PRecord<PFields extends PData>
   implements PType<Array<PConstanted<PFields>>, RecordOf<PLifted<PFields>>> {
@@ -53,6 +53,21 @@ export class PRecord<PFields extends PData>
       r[key] = pfield.genData();
     });
     return r;
+  };
+
+  public show = (tabs = ""): string => {
+    const tt = t + tabs;
+    const ttt = t + tt;
+    const tttt = t + ttt;
+
+    const fields = Object.entries(this.pfields).map(([key, pfield]) => {
+      return `${ttt}${key}: ${pfield.show(tttt)}`;
+    });
+    return `PRecord (
+${ttt}pfields: {
+${fields.join(",\n")}
+${ttt}}
+${tt})`;
   };
 
   static genPType(

@@ -2,7 +2,7 @@ import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { Generators, genNonNegative, maxInteger, PData } from "../../mod.ts";
 import { Constr } from "../data.ts";
 import { PRecord } from "./record.ts";
-import { PConstanted, PLifted, PType, RecordOf } from "./type.ts";
+import { f, PConstanted, PLifted, PType, RecordOf, t } from "./type.ts";
 
 export class PConstr<PFields extends PData>
   implements PType<Constr<PConstanted<PFields>>, RecordOf<PLifted<PFields>>> {
@@ -35,6 +35,16 @@ export class PConstr<PFields extends PData>
 
   public genData = (): RecordOf<PLifted<PFields>> => {
     return this.pfields.genData();
+  };
+
+  public show = (tabs = ""): string => {
+    const tt = tabs + t;
+    const ttf = tt + f;
+
+    return `PConstr (
+${ttf}index: ${this.index.toString()},
+${ttf}pfields: ${this.pfields.show(ttf)}
+${tt})`;
   };
 
   static genPType(

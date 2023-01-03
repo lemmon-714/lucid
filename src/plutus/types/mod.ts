@@ -5,7 +5,7 @@ export * from "./constraint.ts";
 export * from "./integer.ts";
 export * from "./list.ts";
 export * from "./map.ts";
-export * from "./mapRecord.ts";
+export * from "./maprecord.ts";
 export * from "./object.ts";
 export * from "./record.ts";
 export * from "./sum.ts";

@@ -1,7 +1,7 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { Generators, gMaxLength, maybeNdef } from "../../mod.ts";
 import { genNonNegative } from "../../utils/generators.ts";
-import { PConstanted, PData, PLifted, PType } from "./type.ts";
+import { f, PConstanted, PData, PLifted, PType, t } from "./type.ts";
 
 export class PList<PElem extends PData>
   implements PType<Array<PConstanted<PElem>>, Array<PLifted<PElem>>> {
@@ -47,6 +47,16 @@ export class PList<PElem extends PData>
   public genData = (): PLifted<PElem>[] => {
     const length = this.length ? this.length : genNonNegative(gMaxLength);
     return PList.genList(this.pelem.genData, length);
+  };
+
+  public show = (tabs = ""): string => {
+    const tt = tabs + t;
+    const ttf = tt + f;
+
+    return `PList (
+${ttf}pelem: ${this.pelem.show(ttf)},
+${ttf}length?: ${this.length}
+${tt})`;
   };
 
   static genPType(
