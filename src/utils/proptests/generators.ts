@@ -13,8 +13,8 @@ const zeroChance = 0.1;
 const ndefChance = 0.1;
 export const maxInteger = BigInt(Number.MAX_SAFE_INTEGER); // TODO better value, maybe look at chain/plutus max
 const maxStringBytes = 100n; // TODO higher
-export const gMaxLength = 3n;
-export const gMaxDepth = 2n;
+export const gMaxLength = 5n;
+export const gMaxDepth = 5n;
 
 export class Generators {
   constructor(
@@ -42,6 +42,9 @@ export class Generators {
 
 export function max(a: bigint, b: bigint): bigint {
   return a > b ? a : b;
+}
+export function min(a: bigint, b: bigint): bigint {
+  return a < b ? a : b;
 }
 
 export function randomChoice<T>(alternatives: T[]): T {

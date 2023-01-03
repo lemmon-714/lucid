@@ -5,6 +5,8 @@ import { PType } from "./type.ts";
  * TODO consider type checks in the functions still.
  */
 export class PAny<P extends PlutusData> implements PType<P, P> {
+  public population = 0; // because not implemented
+
   public plift(data: P): P {
     return data;
   }

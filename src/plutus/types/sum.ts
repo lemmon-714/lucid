@@ -13,6 +13,8 @@ import { PConstanted, PData, PLifted, PType, RecordOf } from "./type.ts";
 
 export class PSum<PFields extends PData>
   implements PType<Constr<PConstanted<PFields>>, RecordOf<PLifted<PFields>>> {
+  public population = 0; // because not implemented
+
   constructor(
     public pconstrs: Array<PRecord<PFields>>,
   ) {}

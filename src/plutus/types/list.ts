@@ -9,11 +9,15 @@ import { f, PConstanted, PData, PLifted, PType, t } from "./type.ts";
 
 export class PList<PElem extends PData>
   implements PType<Array<PConstanted<PElem>>, Array<PLifted<PElem>>> {
+  public population: number;
+
   constructor(
     public pelem: PElem,
     public length?: bigint,
   ) {
     assert(!length || length >= 0, "negative length");
+    if (!length || length === 0n) this.population = 1; // worst case, consider preventing this by setting minimum size
+    else this.population = pelem.population ** Number(length);
   }
 
   public plift = (l: Array<PConstanted<PElem>>): Array<PLifted<PElem>> => {
@@ -58,6 +62,7 @@ export class PList<PElem extends PData>
     const ttf = tt + f;
 
     return `PList (
+${ttf}population: ${this.population},
 ${ttf}pelem: ${this.pelem.show(ttf)},
 ${ttf}length?: ${this.length}
 ${tt})`;

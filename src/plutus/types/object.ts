@@ -34,11 +34,13 @@ type AttributeTypes<T> = {
 }[keyof T];
 
 export class PObject<O extends Object> implements PType<PlutusOfObject<O>, O> {
+  public population: number;
   // public precord: PRecord<PData>;
   constructor(
     public precord: PRecord<PData>, // TODO WIP
     public O: new (...args: any[]) => O,
   ) {
+    this.population = precord.population;
     // const record: RecordOf<PData> = {};
     // const obj = new anew();
     // console.log(obj);
@@ -80,6 +82,7 @@ export class PObject<O extends Object> implements PType<PlutusOfObject<O>, O> {
     const ttf = tt + f;
 
     return `PObject (
+${ttf}population: ${this.population},
 ${ttf}precord: ${this.precord.show(ttf)},
 ${ttf}O: ${this.O.name}
 ${tt})`;

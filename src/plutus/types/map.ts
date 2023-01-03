@@ -4,6 +4,7 @@ import {
   genNonNegative,
   gMaxLength,
   maybeNdef,
+  min,
   toPlutusData,
 } from "../../mod.ts";
 import { Data } from "../data.ts";
@@ -17,20 +18,33 @@ export class PMap<
     Map<PConstanted<PKey>, PConstanted<PValue>>,
     Map<PLifted<PKey>, PLifted<PValue>>
   > {
+  public population: number;
+
   constructor(
     public pkey: PKey,
     public pvalue: PValue,
     public size?: bigint,
     public keys?: PLifted<PKey>[],
+    private plutusKeys?: PConstanted<PKey>[],
   ) {
     if (keys) {
+      this.population = pvalue.population ** keys.length;
+      this.plutusKeys = keys.map((k) => pkey.pconstant(k)) as PConstanted<
+        PKey
+      >[];
       const length = BigInt(keys.length);
       if (size) {
         assert(length === size, `PMap: wrong size`);
       } else {
         this.size = length;
       }
-    }
+    } else if (size) {
+      this.population = pvalue.population ** Number(size); // overkill
+      assert(
+        Number(size) <= pkey.population,
+        `PMap: not enough keys for size ${size} in\n${pkey.show()}`,
+      );
+    } else this.population = 1; // worst case, consider preventing this by setting minimum size, or using undefined
   }
 
   public plift = (
@@ -44,13 +58,13 @@ export class PMap<
 
     const data = new Map<PLifted<PKey>, PLifted<PValue>>();
     let i = 0;
-    m.forEach((value: PLifted<PKey>, key: PLifted<PValue>) => {
+    m.forEach((value: PConstanted<PKey>, key: PConstanted<PValue>) => {
       const k = this.pkey.plift(key);
       assert(
-        !this.keys ||
-          Data.to(this.pkey.pconstant(this.keys[i++])) ===
-            Data.to(this.pkey.pconstant(k)),
-        `PMap.plift: wrong key`,
+        !this.plutusKeys || Data.to(this.plutusKeys[i++]) === Data.to(key),
+        `PMap.pconstant: wrong key of ptype
+        ${this.pkey.show()}
+        : ${key.toString()}`,
       );
       data.set(k, this.pvalue.plift(value));
     });
@@ -58,7 +72,7 @@ export class PMap<
   };
 
   public pconstant = (
-    data: Map<PLifted<PKey>, PLifted<PKey>>,
+    data: Map<PLifted<PKey>, PLifted<PValue>>,
   ): Map<PConstanted<PKey>, PConstanted<PValue>> => {
     assert(data instanceof Map, `pconstant: expected Map`);
     assert(
@@ -68,10 +82,16 @@ export class PMap<
 
     const m = new Map<PConstanted<PKey>, PConstanted<PValue>>();
     let i = 0;
-    data.forEach((value, key) => {
-      assert(!this.keys || this.keys[i++] === key, `PMap.pconstant: wrong key`);
+    data.forEach((value: PLifted<PKey>, key: PLifted<PValue>) => {
+      const k = this.pkey.pconstant(key);
+      assert(
+        !this.plutusKeys ||
+          Data.to(this.plutusKeys[i++]) ===
+            Data.to(k),
+        `PMap.plift: wrong key`,
+      );
       m.set(
-        this.pkey.pconstant(key) as PConstanted<PKey>,
+        k as PConstanted<PKey>,
         this.pvalue.pconstant(value) as PConstanted<PValue>,
       );
     });
@@ -104,20 +124,32 @@ ${t}size: ${Number(size)}`,
     const keys = new Array<PLifted<PKey>>();
     const keyStrings = new Array<string>();
 
+    const maxKeys = pkey.population;
     if (size) {
+      assert(
+        size <= maxKeys,
+        `PMap.genKeys: size too big: ${Number(size)} vs. ${maxKeys}`,
+      );
       while (keys.length < size) genKey();
     } else {
-      const size_ = genNonNegative(gMaxLength);
+      const size_ = genNonNegative(
+        BigInt(Math.min(Number(gMaxLength), maxKeys)),
+      );
       for (let i = 0; i < size_; i++) genKey();
     }
     return keys;
   }
 
-  static genMap<PKey extends PData, PValue extends PData>(
+  // private for now to avoid for now recalculation of population in assert
+  private static genMap<PKey extends PData, PValue extends PData>(
     pkey: PKey,
     pvalue: PValue,
     size: bigint,
   ): Map<PLifted<PKey>, PConstanted<PValue>> {
+    // assert(
+    //   Number(size) <= pkey.population(),
+    //   `PMap: not enough keys for size ${size} in ${pkey.show()}`,
+    // );
     const m = new Map<PLifted<PKey>, PLifted<PValue>>();
     const keys = PMap.genKeys(pkey, size);
     keys.forEach((key: PLifted<PKey>) => {
@@ -134,12 +166,14 @@ ${t}size: ${Number(size)}`,
       });
       return m;
     } else {
-      const size = this.size ? this.size : genNonNegative(gMaxLength);
+      const size = this.size ? this.size : genNonNegative(
+        BigInt(Math.min(Number(gMaxLength), this.pkey.population)),
+      );
       return PMap.genMap(this.pkey, this.pvalue, size);
     }
   };
 
-  public show(tabs = ""): string {
+  public show = (tabs = ""): string => {
     const tt = tabs + t;
     const ttf = tt + f;
     const ttft = ttf + t;
@@ -148,19 +182,19 @@ ${t}size: ${Number(size)}`,
       ? this.keys.length > 0
         ? `[\n` + this.keys.map((k) => {
           const key = this.pkey.pconstant(k);
-          return ttft + f +
-            (typeof key === "bigint" ? key.toString() : JSON.stringify(key));
+          return ttft + f + key.toString();
         }).join(",\n") + `\n${ttft}]`
         : "[]"
       : "undefined";
 
     return `PMap (
+${ttf}population: ${this.population},
 ${ttf}pkey: ${this.pkey.show(ttf)},
 ${ttf}pvalue: ${this.pvalue.show(ttf)},
 ${ttf}size?: ${this.size},
 ${ttf}keys?: ${keys}
 ${tt})`;
-  }
+  };
 
   static genPType(
     gen: Generators,
@@ -169,7 +203,12 @@ ${tt})`;
     const pkey = gen.generate(maxDepth - 1n);
     const pvalue = gen.generate(maxDepth - 1n);
     const keys = maybeNdef(() => PMap.genKeys(pkey))?.();
-    const size = maybeNdef(BigInt(keys?.length ?? genNonNegative(gMaxLength)));
+    const size = maybeNdef(
+      BigInt(
+        keys?.length ??
+          genNonNegative(BigInt(Math.min(Number(gMaxLength), pkey.population))),
+      ),
+    );
 
     return new PMap(pkey, pvalue, size, keys);
   }

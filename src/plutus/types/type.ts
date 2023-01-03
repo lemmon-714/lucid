@@ -29,6 +29,7 @@ export type PlutusOf<T> = T extends PlutusData ? T
 export type PlutusOfObject<T extends Object> = Array<PlutusOf<T[keyof T]>>;
 
 export interface PType<P extends PlutusData, T> {
+  population: number; // number because convenient Infinity type
   plift(data: P): T;
   pconstant(data: T): P;
   // abstract genPType(gen: Generators, maxDepth: number, maxLength: number): PData; // static

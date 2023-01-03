@@ -12,6 +12,8 @@ import { f, PConstanted, PData, PLifted, PType, RecordOf, t } from "./type.ts";
 export class PMapRecord<PFields extends PData>
   implements
     PType<Map<string, PConstanted<PFields>>, Map<string, PLifted<PFields>>> {
+  public population: number;
+
   constructor(
     public pfields: RecordOf<PFields>,
   ) {
@@ -22,6 +24,11 @@ export class PMapRecord<PFields extends PData>
         throw new Error(`PMapRecord: key is not a valid hex string: ${key}`);
       }
     }
+    let population = 1;
+    Object.values(pfields).forEach((pfield) => {
+      population *= pfield.population;
+    });
+    this.population = population;
   }
 
   public plift = (
@@ -70,17 +77,16 @@ export class PMapRecord<PFields extends PData>
   };
 
   public show = (tabs = ""): string => {
-    const tt = tabs + t;
-    const ttf = tt + f;
-    const ttff = ttf + f;
+    const tt = t + tabs;
+    const ttt = t + tt;
+    const tttt = t + ttt;
 
     const fields = Object.entries(this.pfields).map(([key, pfield]) => {
-      return `${ttff}${key}: ${pfield.show(ttff)}`;
-    });
+      return `${key}: ${pfield.show(tttt)}\n${ttt}`;
+    }).join("");
     return `PMapRecord (
-${ttf}pfields: {
-${fields.join(",\n")}
-${ttf}}
+${ttt}population: ${this.population},
+${ttt}pfields: {${fields}}
 ${tt})`;
   };
 

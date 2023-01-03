@@ -1,8 +1,10 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { genNumber } from "../../mod.ts";
+import { genNumber, maxInteger } from "../../mod.ts";
 import { PType } from "./type.ts";
 
 export class PInteger implements PType<bigint, bigint> {
+  public population = Infinity;
+
   public plift = (i: bigint): bigint => {
     assert(
       typeof i === `bigint`,

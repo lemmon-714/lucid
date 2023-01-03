@@ -6,10 +6,14 @@ import { f, PConstanted, PData, PLifted, PType, RecordOf, t } from "./type.ts";
 
 export class PConstr<PFields extends PData>
   implements PType<Constr<PConstanted<PFields>>, RecordOf<PLifted<PFields>>> {
+  public population: number;
+
   constructor(
     public index: bigint,
     public pfields: PRecord<PFields>,
-  ) {}
+  ) {
+    this.population = pfields.population;
+  }
 
   public plift = (
     c: Constr<PConstanted<PFields>>,
@@ -42,6 +46,7 @@ export class PConstr<PFields extends PData>
     const ttf = tt + f;
 
     return `PConstr (
+${ttf}population: ${this.population},
 ${ttf}index: ${this.index.toString()},
 ${ttf}pfields: ${this.pfields.show(ttf)}
 ${tt})`;

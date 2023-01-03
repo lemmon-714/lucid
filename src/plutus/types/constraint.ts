@@ -3,11 +3,15 @@ import { f, PConstanted, PData, PLifted, PType, t } from "./type.ts";
 
 export class PConstraint<PInner extends PData> {
   // implements PType<PConstanted<PInner>, PLifted<PInner>> {
+  public population: number;
+
   constructor(
     public pinner: PInner,
     public asserts: ((i: PLifted<PInner>) => void)[],
     public genInnerData: () => PLifted<PInner>,
-  ) {}
+  ) {
+    this.population = pinner.population;
+  }
 
   public plift = (data: PConstanted<PInner>): PLifted<PInner> => {
     const plifted = this.pinner.plift(data);
@@ -40,6 +44,7 @@ export class PConstraint<PInner extends PData> {
     ${ttf}]`;
 
     return `PConstraint (
+${ttf}population: ${this.population},
 ${ttf}pinner: ${this.pinner.show(ttf)},
 ${ttf}asserts: \${asserts},
 ${ttf}genInnerData: ${this.genInnerData.toString()}

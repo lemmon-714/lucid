@@ -4,6 +4,7 @@ import { f, PConstanted, PData, PLifted, PType, t } from "./type.ts";
 
 export class PLiteral<PT extends PData>
   implements PType<PConstanted<PT>, PLifted<PT>> {
+  public population = 1;
   public plutusLiteral: PConstanted<PT>;
   constructor(
     public pliteral: PT,
@@ -29,6 +30,7 @@ export class PLiteral<PT extends PData>
     const ttf = tt + f;
 
     return `PLiteral (
+${ttf}population: ${this.population},
 ${ttf}plutusLiteral: ${this.pliteral.show(ttf)},
 ${ttf}literal: TODO implement
 ${tt})`;

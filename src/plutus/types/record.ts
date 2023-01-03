@@ -4,9 +4,17 @@ import { PConstanted, PData, PLifted, PType, RecordOf, t } from "./type.ts";
 
 export class PRecord<PFields extends PData>
   implements PType<Array<PConstanted<PFields>>, RecordOf<PLifted<PFields>>> {
+  public population: number;
+
   constructor(
     public pfields: RecordOf<PFields>,
-  ) {}
+  ) {
+    let population = 1;
+    Object.values(pfields).forEach((pfield) => {
+      population *= pfield.population;
+    });
+    this.population = population;
+  }
 
   public plift = (
     l: Array<PConstanted<PFields>>,
@@ -61,12 +69,11 @@ export class PRecord<PFields extends PData>
     const tttt = t + ttt;
 
     const fields = Object.entries(this.pfields).map(([key, pfield]) => {
-      return `${ttt}${key}: ${pfield.show(tttt)}`;
-    });
+      return `${key}: ${pfield.show(tttt)}\n${ttt}`;
+    }).join("");
     return `PRecord (
-${ttt}pfields: {
-${fields.join(",\n")}
-${ttt}}
+${ttt}population: ${this.population},
+${ttt}pfields: {${fields}}
 ${tt})`;
   };
 

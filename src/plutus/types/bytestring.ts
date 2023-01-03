@@ -1,8 +1,10 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { genString } from "../../mod.ts";
+import { genString, maxInteger } from "../../mod.ts";
 import { PType } from "./type.ts";
 
 export class PByteString implements PType<string, string> {
+  public population = Infinity;
+
   public plift = (s: string): string => {
     assert(
       typeof s === `string`,

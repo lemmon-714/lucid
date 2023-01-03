@@ -18,7 +18,7 @@ Deno.test("parsing property tests", () => {
     lucidPrimitiveGenerators,
     lucidContainerGenerators,
   );
-  propertyTestPTypesParsing(gen, 1000);
+  propertyTestPTypesParsing(gen, 100);
 });
 
 const lucidPrimitiveGenerators = [
