@@ -144,10 +144,9 @@ ${t}size: ${Number(size)}`,
     const ttf = tt + f;
     const ttft = ttf + t;
 
-    const thiskeys = ["a", "b", "c"];
-    const keys = thiskeys
-      ? thiskeys.length > 0
-        ? `[\n` + thiskeys.map((k) => {
+    const keys = this.keys
+      ? this.keys.length > 0
+        ? `[\n` + this.keys.map((k) => {
           const key = this.pkey.pconstant(k);
           return ttft + f +
             (typeof key === "bigint" ? key.toString() : JSON.stringify(key));

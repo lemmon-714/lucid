@@ -12,8 +12,11 @@ export function propertyTestPTypesParsing(gen: Generators, iterations: number) {
     console.log(`${i}` + (errs ? ` (${errs} errors)` : ""));
     try {
       const ptype = gen.generate(gMaxDepth);
+      // console.log(ptype.show());
       const data = ptype.genData();
+      // console.log(data)
       const plutusData = ptype.pconstant(data);
+      // console.log(plutusData)
 
       testDataParse(plutusData, dataErrs);
       testPTypeParse(plutusData, data, ptype, ptypeErrs);

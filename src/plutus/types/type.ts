@@ -33,7 +33,7 @@ export interface PType<P extends PlutusData, T> {
   pconstant(data: T): P;
   // abstract genPType(gen: Generators, maxDepth: number, maxLength: number): PData; // static
   genData(): T;
-  show(tabs: string): string;
+  show(tabs?: string): string;
 }
 export type Constructor<T> = new (...args: any[]) => T;
 export const PTypes: RecordOf<PData> = {};
