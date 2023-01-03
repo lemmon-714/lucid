@@ -24,14 +24,15 @@ export class PMap<
   constructor(
     public pkey: PKey,
     public pvalue: PValue,
-    public size?: number,
+    public size?: bigint,
     public keys?: PLifted<PKey>[],
   ) {
     if (keys) {
+      const length = BigInt(keys.length);
       if (size) {
-        assert(keys.length === size, `PMap: wrong size`);
+        assert(length === size, `PMap: wrong size`);
       } else {
-        this.size = keys.length;
+        this.size = length;
       }
     }
   }
@@ -41,7 +42,7 @@ export class PMap<
   ): Map<PLifted<PKey>, PLifted<PValue>> => {
     assert(m instanceof Map, `plift: expected Map`);
     assert(
-      !this.size || this.size === m.size,
+      !this.size || this.size === BigInt(m.size),
       `plift: wrong size`,
     );
 
@@ -49,7 +50,12 @@ export class PMap<
     let i = 0;
     m.forEach((value: PLifted<PKey>, key: PLifted<PValue>) => {
       const k = this.pkey.plift(key);
-      assert(!this.keys || this.keys[i++] === k, `plift: wrong key`);
+      assert(
+        !this.keys ||
+          Data.to(this.pkey.pconstant(this.keys[i++])) ===
+            Data.to(this.pkey.pconstant(k)),
+        `PMap.plift: wrong key`,
+      );
       data.set(k, this.pvalue.plift(value));
     });
     return data;
@@ -60,14 +66,14 @@ export class PMap<
   ): Map<PConstanted<PKey>, PConstanted<PValue>> => {
     assert(data instanceof Map, `pconstant: expected Map`);
     assert(
-      !this.size || this.size === data.size,
+      !this.size || this.size === BigInt(data.size),
       `pconstant: wrong size: ${this.size} vs. ${data.size}`,
     );
 
     const m = new Map<PConstanted<PKey>, PConstanted<PValue>>();
     let i = 0;
     data.forEach((value, key) => {
-      assert(!this.keys || this.keys[i++] === key, `pconstant: wrong key`);
+      assert(!this.keys || this.keys[i++] === key, `PMap.pconstant: wrong key`);
       m.set(
         this.pkey.pconstant(key) as PConstanted<PKey>,
         this.pvalue.pconstant(value) as PConstanted<PValue>,
@@ -103,7 +109,7 @@ export class PMap<
   static genMap<PKey extends PData, PValue extends PData>(
     pkey: PKey,
     pvalue: PValue,
-    size: number,
+    size: bigint,
   ): Map<PLifted<PKey>, PConstanted<PValue>> {
     const m = new Map<PLifted<PKey>, PLifted<PValue>>();
     const keys = PMap.genKeys(pkey, size);
@@ -128,13 +134,13 @@ export class PMap<
 
   static genPType(
     gen: Generators,
-    maxDepth: number,
-    maxLength: number,
+    maxDepth: bigint,
+    maxLength: bigint,
   ): PMap<PData, PData> {
-    const pkey = gen.generate(maxDepth - 1, maxLength);
-    const pvalue = gen.generate(maxDepth - 1, maxLength);
+    const pkey = gen.generate(maxDepth - 1n, maxLength);
+    const pvalue = gen.generate(maxDepth - 1n, maxLength);
     const keys = maybeNdef(() => PMap.genKeys(pkey))?.();
-    const size = maybeNdef(keys?.length ?? genNonNegative(maxLength));
+    const size = maybeNdef(BigInt(keys?.length ?? genNonNegative(maxLength)));
 
     return new PMap(pkey, pvalue, size, keys);
   }

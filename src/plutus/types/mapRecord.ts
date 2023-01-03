@@ -65,8 +65,8 @@ export class PMapRecord<PFields extends PData>
 
   static genPType(
     gen: Generators,
-    maxDepth: number,
-    maxLength: number,
+    maxDepth: bigint,
+    maxLength: bigint,
   ): PMapRecord<PData> {
     const pfields: RecordOf<PData> = {};
     const maxi = genNonNegative(maxLength);

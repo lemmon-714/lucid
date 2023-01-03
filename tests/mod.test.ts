@@ -92,7 +92,7 @@ Deno.test("Wallet from utxos roundtrip (legacy utxos)", async () => {
 
 Deno.test("Construct plutus data", () => {
   const data = Data.to(
-    new Constr(1, [BigInt(1), "abcd", "deff", new Constr(0, [])]),
+    new Constr(1n, [BigInt(1), "abcd", "deff", new Constr(0n, [])]),
   );
 
   assertEquals(data, "d87a9f0142abcd42deffd87980ff");
@@ -113,7 +113,7 @@ Deno.test("(De)serialize map", () => {
   assertEquals(m, Data.from(datum) as Map<unknown, unknown>);
 });
 Deno.test("More complex datum structure", () => {
-  const data = [new Constr(1, [new Map([[2n, 3n]])])];
+  const data = [new Constr(1n, [new Map([[2n, 3n]])])];
   const datum = Data.to(data);
   assertEquals(data, Data.from(datum));
 });

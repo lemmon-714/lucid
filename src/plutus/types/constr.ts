@@ -7,7 +7,7 @@ import { PConstanted, PLifted, PType, RecordOf } from "./type.ts";
 export class PConstr<PFields extends PData>
   implements PType<Constr<PConstanted<PFields>>, RecordOf<PLifted<PFields>>> {
   constructor(
-    public index: number,
+    public index: bigint,
     public pfields: PRecord<PFields>,
   ) {}
 
@@ -39,8 +39,8 @@ export class PConstr<PFields extends PData>
 
   static genPType(
     gen: Generators,
-    maxDepth: number,
-    maxLength: number,
+    maxDepth: bigint,
+    maxLength: bigint,
   ): PConstr<PData> {
     const index = genNonNegative(maxInteger);
     const pfields = PRecord.genPType(gen, maxDepth, maxLength);

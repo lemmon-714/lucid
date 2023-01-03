@@ -18,7 +18,7 @@ export class PInteger implements PType<bigint, bigint> {
   };
 
   public genData = (): bigint => {
-    return BigInt(genNumber());
+    return genNumber();
   };
 
   static genPType(): PInteger {

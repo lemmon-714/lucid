@@ -95,8 +95,8 @@ export class PObject<O extends Object> implements PType<PlutusOfObject<O>, O> {
 
   static genPType(
     gen: Generators,
-    maxDepth: number,
-    maxLength: number,
+    maxDepth: bigint,
+    maxLength: bigint,
   ): PObject<ExampleClass> {
     const precord = new PRecord<PData>(
       {

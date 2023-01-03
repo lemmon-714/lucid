@@ -23,11 +23,11 @@ Deno.test("parsing property tests", () => {
     lucidPrimitiveGenerators,
     lucidContainerGenerators,
   );
-  propertyTestPTypesParsing(gen);
+  propertyTestPTypesParsing(gen, 1000);
 });
 
 export const lucidPrimitiveGenerators = [
-  // PData.genPType,
+  // PAny.genPType,
   PInteger.genPType,
   PByteString.genPType,
 ];
@@ -44,12 +44,11 @@ export const lucidContainerGenerators = [
   PConstraint.genPType,
 ];
 
-export function propertyTestPTypesParsing(gen: Generators) {
+export function propertyTestPTypesParsing(gen: Generators, iterations: number) {
   const dataErrs = new Map<string, number>();
   const ptypeErrs = new Map<string, number>();
   const otherErrs = new Map<string, number>();
 
-  const iterations = 100;
   for (let i = 0; i < iterations; i++) {
     console.log(i);
     try {

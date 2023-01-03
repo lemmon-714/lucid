@@ -7,7 +7,7 @@ export class PList<PElem extends PData>
   implements PType<Array<PConstanted<PElem>>, Array<PLifted<PElem>>> {
   constructor(
     public pelem: PElem,
-    public length?: number,
+    public length?: bigint,
   ) {
     assert(!length || length >= 0, "negative length");
   }
@@ -15,7 +15,7 @@ export class PList<PElem extends PData>
   public plift = (l: Array<PConstanted<PElem>>): Array<PLifted<PElem>> => {
     assert(l instanceof Array, `List.plift: expected List: ${l}`);
     assert(
-      !this.length || this.length === l.length,
+      !this.length || this.length === BigInt(l.length),
       `plift: wrong length - ${this.length} vs. ${l.length}`,
     );
     const data = l.map((elem) => this.pelem.plift(elem));
@@ -27,7 +27,7 @@ export class PList<PElem extends PData>
   ): Array<PConstanted<PElem>> => {
     assert(data instanceof Array, `pconstant: expected Array`);
     assert(
-      !this.length || this.length === data.length,
+      !this.length || this.length === BigInt(data.length),
       `pconstant: wrong length`,
     );
     return data.map(this.pelem.pconstant) as Array<PConstanted<PElem>>;
@@ -35,7 +35,7 @@ export class PList<PElem extends PData>
 
   static genList<T>(
     elemGenerator: () => T,
-    length: number,
+    length: bigint,
   ): Array<T> {
     const l = new Array<T>();
     for (let i = 0; i < length; i++) {
@@ -51,8 +51,8 @@ export class PList<PElem extends PData>
 
   static genPType(
     gen: Generators,
-    maxDepth: number,
-    maxLength: number,
+    maxDepth: bigint,
+    maxLength: bigint,
   ): PList<PData> {
     const length = maybeNdef(genNonNegative(maxLength));
     const pelem = gen.generate(maxDepth, maxLength);

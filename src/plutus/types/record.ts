@@ -57,8 +57,8 @@ export class PRecord<PFields extends PData>
 
   static genPType(
     gen: Generators,
-    maxDepth: number,
-    maxLength: number,
+    maxDepth: bigint,
+    maxLength: bigint,
   ): PRecord<PData> {
     const pfields: RecordOf<PData> = {};
     const maxi = genNonNegative(maxLength);

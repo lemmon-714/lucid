@@ -1,14 +1,11 @@
+import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { C, Core } from "../core/mod.ts";
 import { Datum, Json, PlutusData, Redeemer } from "../types/mod.ts";
 import { fromHex, toHex } from "../utils/utils.ts";
 
 export class Constr<T> {
-  index: number;
-  fields: T[];
-
-  constructor(index: number, fields: T[]) {
-    this.index = index;
-    this.fields = fields;
+  constructor(public index: bigint, public fields: T[]) {
+    assert(index >= 0n, "Constr index must be non-negative");
   }
 }
 
@@ -78,7 +75,7 @@ export class Data {
         for (let i = 0; i < l.len(); i++) {
           desL.push(deserialize(l.get(i)));
         }
-        return new Constr(parseInt(constr.alternative().to_str()), desL);
+        return new Constr(BigInt(constr.alternative().to_str()), desL);
       } else if (data.kind() === 1) {
         const m = data.as_map()!;
         const desM: Map<PlutusData, PlutusData> = new Map();

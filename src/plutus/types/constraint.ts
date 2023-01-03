@@ -1,8 +1,8 @@
 import { Generators } from "../../mod.ts";
 import { PConstanted, PData, PLifted, PType } from "./type.ts";
 
-export class PConstraint<PInner extends PData>
-  implements PType<PConstanted<PInner>, PLifted<PInner>> {
+export class PConstraint<PInner extends PData> {
+  // implements PType<PConstanted<PInner>, PLifted<PInner>> {
   constructor(
     public pinner: PInner,
     public asserts: ((i: PLifted<PInner>) => void)[],
@@ -11,20 +11,17 @@ export class PConstraint<PInner extends PData>
 
   public plift = (data: PConstanted<PInner>): PLifted<PInner> => {
     const plifted = this.pinner.plift(data);
-    if (this.asserts) {
-      this.asserts.forEach((assert) => {
-        assert(plifted);
-      });
-    }
+    this.asserts.forEach((assert) => {
+      assert(plifted);
+    });
     return plifted;
   };
 
-  public pconstant = (data: PLifted<PInner>): PConstanted<any> => {
-    if (this.asserts) {
-      this.asserts.forEach((assert) => {
-        assert(data);
-      });
-    }
+  // @ts-ignore TODO: fix this
+  public pconstant = (data: PLifted<PInner>): PConstanted<PInner> => {
+    this.asserts.forEach((assert) => {
+      assert(data);
+    });
     return this.pinner.pconstant(data) as PConstanted<PInner>;
   };
 
@@ -34,8 +31,8 @@ export class PConstraint<PInner extends PData>
 
   static genPType(
     gen: Generators,
-    maxDepth: number,
-    maxLength: number,
+    maxDepth: bigint,
+    maxLength: bigint,
   ): PConstraint<PData> {
     const pinner = gen.generate(maxDepth, maxLength);
     const genInnerData = pinner.genData;

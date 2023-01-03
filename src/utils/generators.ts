@@ -1,5 +1,6 @@
 // TODO consider generating wrong cases as well
 
+import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import {
   PByteString,
   PData,
@@ -11,10 +12,14 @@ import {
 
 const zeroChance = 0.1;
 const ndefChance = 0.1;
-export const maxInteger = Number.MAX_SAFE_INTEGER;
-const maxStringBytes = 100; // TODO higher
-export const gMaxLength = 4;
-export const gMaxDepth = 2;
+export const maxInteger = BigInt(Number.MAX_SAFE_INTEGER); // TODO better value, maybe look at chain/plutus max
+const maxStringBytes = 100n; // TODO higher
+export const gMaxLength = 4n;
+export const gMaxDepth = 2n;
+
+export function max(a: bigint, b: bigint): bigint {
+  return a > b ? a : b;
+}
 
 export function randomChoice<T>(alternatives: T[]): T {
   return randomIndexedChoice(alternatives)[0];
@@ -51,19 +56,23 @@ export function maybeNdef<T>(value: T) {
   }
 }
 
-export function genPositive(maxValue?: number): number {
-  return 1 + Math.floor(Math.random() * (maxValue ? maxValue - 1 : maxInteger));
+export function genPositive(maxValue?: bigint): bigint {
+  assert(maxValue === undefined || maxValue > 0n, `genPositive: maxValue <= 0`);
+  return 1n +
+    BigInt(
+      Math.floor(Math.random() * Number(maxValue ? maxValue - 1n : maxInteger)),
+    );
 }
 
-export function genNonNegative(maxValue?: number): number {
+export function genNonNegative(maxValue?: bigint): bigint {
   if (Math.random() > zeroChance) {
     return genPositive(maxValue);
   } else {
-    return 0;
+    return 0n;
   }
 }
 
-export function genNumber(maxValue?: number): number {
+export function genNumber(maxValue?: bigint): bigint {
   const n = genNonNegative(maxValue);
   return randomChoice([n, -n]);
 }
@@ -78,7 +87,7 @@ export function genString(alph: string): string {
     }
   }
   const l: string[] = [];
-  const maxi = 8 * genNonNegative(maxStringBytes);
+  const maxi = 8n * genNonNegative(maxStringBytes);
   for (let i = 0; i < maxi; i++) {
     l.push(genChar());
   }
@@ -101,13 +110,13 @@ export class Generators {
     public containers: Array<
       (
         gen: Generators,
-        maxDepth: number,
-        maxLength: number,
+        maxDepth: bigint,
+        maxLength: bigint,
       ) => PData
     >,
   ) {}
 
-  public generate(maxDepth: number, maxLength: number): PData {
+  public generate(maxDepth: bigint, maxLength: bigint): PData {
     const generator = maxDepth > 0
       ? randomChoice([
         ...this.primitives,
@@ -115,7 +124,7 @@ export class Generators {
       ])
       : randomChoice(this.primitives);
     // console.log(maxDepth, maxLength);
-    return generator(this, Math.max(maxDepth - 1, 0), maxLength);
+    return generator(this, max(maxDepth - 1n, 0n), maxLength);
   }
 }
 

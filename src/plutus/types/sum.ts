@@ -23,7 +23,7 @@ export class PSum<PFields extends PData>
   ): RecordOf<PLifted<PFields>> => {
     assert(c instanceof Constr, `plift: expected Constr`);
     assert(c.index < this.pconstrs.length, `plift: constr index out of bounds`);
-    return this.pconstrs[c.index].plift(c.fields);
+    return this.pconstrs[Number(c.index)].plift(c.fields);
   };
 
   public pconstant = (
@@ -43,8 +43,8 @@ export class PSum<PFields extends PData>
 
   static genPType(
     gen: Generators,
-    maxDepth: number,
-    maxLength: number,
+    maxDepth: bigint,
+    maxLength: bigint,
   ): PRecord<PData> {
     const pfields: RecordOf<PData> = {};
     const maxi = genNonNegative(maxLength);
