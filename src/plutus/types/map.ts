@@ -39,12 +39,13 @@ export class PMap<
         this.size = length;
       }
     } else if (size) {
-      this.population = pvalue.population ** Number(size); // overkill
+      this.population = (pkey.population * pvalue.population) ** Number(size); // overkill
       assert(
         Number(size) <= pkey.population,
         `PMap: not enough keys for size ${size} in\n${pkey.showPType()}`,
       );
     } else this.population = 1; // worst case, consider preventing this by setting minimum size, or using undefined
+    assert(this.population > 0, `Population not positive in ${this.showPType()}`);
   }
 
   public plift = (
@@ -109,10 +110,11 @@ export class PMap<
       const key = pkey.genData();
       const keyString = pkey.showData(key);
 
-      if (!keyStrings.includes(keyString)) {
-        keyStrings.push(keyString);
+      if (!keyStrings.has(keyString)) {
+        keyStrings.set(keyString, 1);
         keys.push(key);
       } else {
+        keyStrings.set(keyString, keyStrings.get(keyString)! + 1);
         // console.log(
         //   `PMap.genKeys: duplicate key: ${keyString}, timeout: ${
         //     Number(timeout)
@@ -121,16 +123,16 @@ export class PMap<
         if (timeout-- < 0n) {
           throw new Error(
             `Map.genKeys: timeout with
-  ${t}keyStrings: ${keyStrings},
-  ${t}pkey: ${pkey.showPType(t)},
-  ${t}size: ${Number(size)}`,
+${t}size: ${Number(size)},
+${t}keyStrings: ${[...keyStrings.entries()].map(([key, value]) => `${value} x ${key}`).join(`,\n${t + f}`)},
+${t}pkey: ${pkey.showPType(t)}`,
           );
         }
       }
     }
 
     const keys = new Array<PLifted<PKey>>();
-    const keyStrings = new Array<string>();
+    const keyStrings = new Map<string, number>();
 
     const maxKeys = pkey.population;
     if (size) {

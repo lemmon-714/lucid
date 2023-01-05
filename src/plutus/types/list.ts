@@ -18,6 +18,7 @@ export class PList<PElem extends PData>
     assert(!length || length >= 0, "negative length");
     if (!length || length === 0n) this.population = 1; // worst case, consider preventing this by setting minimum size
     else this.population = pelem.population ** Number(length);
+    assert(this.population > 0, `Population not positive in ${this.showPType()}`);
   }
 
   public plift = (l: Array<PConstanted<PElem>>): Array<PLifted<PElem>> => {

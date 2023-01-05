@@ -1,3 +1,4 @@
+import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { Generators } from "../../mod.ts";
 import { Constr } from "../data.ts";
 import { PAny } from "./any.ts";
@@ -41,6 +42,7 @@ export class PObject<O extends Object> implements PType<PlutusOfObject<O>, O> {
     public O: new (...args: any[]) => O,
   ) {
     this.population = precord.population;
+    assert(this.population > 0, `Population not positive in ${this.showPType()}`);
     // const record: RecordOf<PData> = {};
     // const obj = new anew();
     // console.log(obj);

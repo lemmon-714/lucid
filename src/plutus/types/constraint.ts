@@ -1,3 +1,4 @@
+import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { Generators } from "../../mod.ts";
 import { f, PConstanted, PData, PLifted, PType, t } from "./type.ts";
 
@@ -12,6 +13,7 @@ export class PConstraint<PInner extends PData> {
     public details?: string,
   ) {
     this.population = pinner.population;
+    assert(this.population > 0, `Population not positive in ${this.showPType()}`);
   }
 
   public plift = (data: PConstanted<PInner>): PLifted<PInner> => {

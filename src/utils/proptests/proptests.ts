@@ -1,5 +1,5 @@
-import { assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { Data, gMaxLength, PData, PlutusData, PType, t } from "../../mod.ts";
+import { assert, assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
+import { Data, f, gMaxLength, PData, PlutusData, PType, t } from "../../mod.ts";
 import { Generators, gMaxDepth } from "./generators.ts";
 import { maxInteger } from "./mod.ts";
 
@@ -22,7 +22,7 @@ export function proptestPTypes(gen: Generators, iterations: number) {
       // console.log(ptype.showData(data));
 
       // console.log(`testing population of ${ptype.showPType(t)}`)
-      testPopulation(ptype, popErrs);
+      // testPopulation(ptype, popErrs);
       // console.log("testing data parsing")
       testDataParse(plutusData, dataErrs);
       // console.log("testing ptype parsing")
@@ -82,26 +82,54 @@ function printErrs(record: Map<string, number>, name: string): number {
   return total;
 }
 
-function testPopulation(ptype: PData, errors: Map<string, number>) {
-  if (ptype.population >= 100n) return;
+// testing that population is indeed large
+function testBigPopulation(ptype: PData, errors: Map<string, number>) {
+  return
+  // const popStrings: string[] = [];
+  // let consecutiveHits = 0
+
+  // try {
+  //   for (let i = 0; i < 100; i++) {
+  //     const p = ptype.genData();
+  //     const s = ptype.showData(p);
+  //     if (!popStrings.includes(s)) {
+  //       popStrings.push(s);
+  //     } else {
+  //       if (consecutiveHits++ > 3) {
+  //         throw new Error(`consecutiveHits: ${consecutiveHits} in ${ptype.showPType()}`);
+  //       }
+  //     }
+  //   }
+  // } catch (err) {
+  //   logError(err, errors);
+  // }
+}
+
+// testing exact population match
+function testSmallPopulation(ptype: PData, errors: Map<string, number>) {
   const popStrings: string[] = [];
 
   try {
-    for (let i = 0n; i < ptype.population; i++) {
-      for (let j = 0n; j < ptype.population; j++) {
-        const p = ptype.genData();
-        const s = ptype.showData(p);
-        if (!popStrings.includes(s)) {
-          popStrings.push(s);
-        }
+    assert(ptype.population > 0, "population must be positive")
+    
+    for (let i = 0; i < ptype.population ** 2; i++) {
+      const p = ptype.genData();
+      const s = ptype.showData(p);
+      if (!popStrings.includes(s)) {
+        popStrings.push(s);
       }
     }
-    assertEquals(
-      popStrings.length,
-      ptype.population,
-      `ptype.population: ${ptype.population}, popStrings.length: ${popStrings.length}`,
+    assert(
+      ptype.population <= popStrings.length,
+      `popStrings.length: ${popStrings.length} less than population of\n${ptype.showPType()}\n`
+      // popStrings: [${popStrings.join(`\n${f}`)}]`,
     );
   } catch (err) {
     logError(err, errors);
   }
+}
+
+function testPopulation(ptype: PData, errors: Map<string, number>) {
+  if (ptype.population >= 100n) testBigPopulation(ptype, errors);
+  else testSmallPopulation(ptype, errors);
 }

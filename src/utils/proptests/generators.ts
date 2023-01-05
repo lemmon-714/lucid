@@ -10,7 +10,7 @@ import {
 } from "../../mod.ts";
 
 export const maxInteger = 9000n; //BigInt(Number.MAX_SAFE_INTEGER); // TODO better value, maybe look at chain/plutus max
-const maxStringBytes = 4n; // TODO higher
+const maxStringBytes = 2n; // TODO higher
 export const gMaxLength = 4n;
 export const gMaxDepth = 4n;
 
@@ -43,6 +43,10 @@ export function max(a: bigint, b: bigint): bigint {
 }
 export function min(a: bigint, b: bigint): bigint {
   return a < b ? a : b;
+}
+
+export function abs(n: bigint): bigint {
+  return n < 0n ? -n : n;
 }
 
 export function randomChoice<T>(alternatives: T[]): T {

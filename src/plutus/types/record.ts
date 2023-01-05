@@ -14,6 +14,7 @@ export class PRecord<PFields extends PData>
       population *= pfield.population;
     });
     this.population = population;
+    assert(this.population > 0, `Population not positive in ${this.showPType()}`);
   }
 
   public plift = (
@@ -73,7 +74,7 @@ export class PRecord<PFields extends PData>
     const ttft = ttf + t;
 
     const fields = Object.entries(data).map(([key, value]) => {
-      return `${key}: ${this.pfields[key].showData(value, ttft)}`;
+      return `${key.length === 0 ? "_" : key}: ${this.pfields[key].showData(value, ttft)}`;
     }).join(",\n");
     return `Record {
 ${ttf}${fields}
@@ -86,7 +87,7 @@ ${tt}}`;
     const ttft = ttf + t;
 
     const fields = Object.entries(this.pfields).map(([key, pfield]) => {
-      return `${key}: ${pfield.showPType(ttft)}\n${ttf}`;
+      return `${key.length === 0 ? "_" : key}: ${pfield.showPType(ttft)}\n${ttf}`;
     }).join(",\n");
     return `PRecord (
 ${ttf}population: ${this.population},

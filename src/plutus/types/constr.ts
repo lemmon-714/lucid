@@ -13,6 +13,7 @@ export class PConstr<PFields extends PData>
     public pfields: PRecord<PFields>,
   ) {
     this.population = pfields.population;
+    assert(this.population > 0, `Population not positive in ${this.showPType()}`);
   }
 
   public plift = (

@@ -29,6 +29,7 @@ export class PMapRecord<PFields extends PData>
       population *= pfield.population;
     });
     this.population = population;
+    assert(this.population > 0, `Population not positive in ${this.showPType()}`);
   }
 
   public plift = (
@@ -86,24 +87,25 @@ export class PMapRecord<PFields extends PData>
     const ttft = ttf + t;
 
     const fields = [...data.entries()].map(([key, value]) => {
-      return `${key} => ${this.pfields[key].showData(value, ttft)}`;
+      return `${ttf}${key.length === 0 ? "_" : key} => ${this.pfields[key].showData(value, ttft)}`;
     }).join(",\n");
     return `MapRecord {
-${ttf}${fields}
+${fields}
 ${tt}}`;
   };
 
   public showPType = (tabs = ""): string => {
     const tt = tabs + t;
     const ttf = tt + f;
-    const ttft = ttf + t;
+    const ttfttt = ttf + t + t + t;
 
     const fields = Object.entries(this.pfields).map(([key, pfield]) => {
-      return `${key} => ${pfield.showPType(ttft)}\n${ttf}`;
-    }).join(",\n");
+      return `${key.length === 0 ? "_" : key} => ${pfield.showPType(ttfttt + f + t)}`;
+    }).join(`,\n`);
     return `PMapRecord (
 ${ttf}population: ${this.population},
-${ttf}pfields: {${fields}}
+${ttf}pfields: {${fields}
+${ttfttt}}
 ${tt})`;
   };
 
