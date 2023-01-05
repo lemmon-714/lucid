@@ -28,7 +28,6 @@ export function proptestPTypes(gen: Generators, iterations: number) {
       // console.log("testing ptype parsing")
       testPTypeParse(plutusData, data, ptype, ptypeErrs);
     } catch (err) {
-      throw err;
       logError(err, otherErrs);
     }
   }
