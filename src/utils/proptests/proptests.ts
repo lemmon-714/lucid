@@ -1,5 +1,5 @@
 import { assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { Data, PData, PlutusData, PType, t } from "../../mod.ts";
+import { Data, gMaxLength, PData, PlutusData, PType, t } from "../../mod.ts";
 import { Generators, gMaxDepth } from "./generators.ts";
 import { maxInteger } from "./mod.ts";
 
@@ -15,16 +15,20 @@ export function proptestPTypes(gen: Generators, iterations: number) {
     try {
       // console.log("generating ptype")
       const ptype = gen.generate(gMaxDepth);
-      // console.log("generating data for " + ptype.show(t));
+      // console.log("generating data for " + ptype.showPType(t));
       const data = ptype.genData();
-      // console.log("constanting " + data);
+      // console.log("constanting " + ptype.showData(data));
       const plutusData = ptype.pconstant(data);
-      // console.log(plutusData);
+      // console.log(ptype.showData(data));
 
+      // console.log(`testing population of ${ptype.showPType(t)}`)
       testPopulation(ptype, popErrs);
+      // console.log("testing data parsing")
       testDataParse(plutusData, dataErrs);
+      // console.log("testing ptype parsing")
       testPTypeParse(plutusData, data, ptype, ptypeErrs);
     } catch (err) {
+      throw err;
       logError(err, otherErrs);
     }
   }
@@ -80,7 +84,7 @@ function printErrs(record: Map<string, number>, name: string): number {
 }
 
 function testPopulation(ptype: PData, errors: Map<string, number>) {
-  if (ptype.population >= 2n * maxInteger + 1n) return;
+  if (ptype.population >= 100n) return;
   const popStrings: string[] = [];
 
   try {

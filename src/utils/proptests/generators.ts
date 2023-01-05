@@ -9,8 +9,6 @@ import {
   PRecord,
 } from "../../mod.ts";
 
-const zeroChance = 0.1;
-const ndefChance = 0.1;
 export const maxInteger = 9000n; //BigInt(Number.MAX_SAFE_INTEGER); // TODO better value, maybe look at chain/plutus max
 const maxStringBytes = 4n; // TODO higher
 export const gMaxLength = 4n;
@@ -79,27 +77,21 @@ export function randomIndexedChoice<T>(alternatives: T[]): [T, number] {
 // }
 
 export function maybeNdef<T>(value: T) {
-  if (Math.random() > ndefChance) {
-    return value;
-  } else {
-    return undefined;
-  }
+  return randomChoice([value, undefined]);
 }
 
-export function genPositive(maxValue?: bigint): bigint {
-  assert(maxValue === undefined || maxValue >= 0n, `genPositive: maxValue < 0`);
-  return 1n +
-    BigInt(
-      Math.floor(Math.random() * Number(maxValue ? maxValue - 1n : maxInteger)),
-    );
+export function genNonNegative(maxValue = maxInteger): bigint {
+  assert(maxValue >= 0n, `genNonNegative: maxValue < 1`);
+  return randomChoice([
+    0n,
+    BigInt(Math.floor(Math.random() * Number(maxValue))),
+    maxValue,
+  ]);
 }
 
-export function genNonNegative(maxValue?: bigint): bigint {
-  if (Math.random() > zeroChance) {
-    return genPositive(maxValue);
-  } else {
-    return 0n;
-  }
+export function genPositive(maxValue = maxInteger): bigint {
+  assert(maxValue >= 1n, `genPositive: maxValue < 1`);
+  return 1n + genNonNegative(maxValue - 1n);
 }
 
 export function genNumber(maxValue?: bigint): bigint {

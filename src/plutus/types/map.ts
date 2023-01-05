@@ -113,11 +113,11 @@ export class PMap<
         keyStrings.push(keyString);
         keys.push(key);
       } else {
-        console.log(
-          `PMap.genKeys: duplicate key: ${keyString}, timeout: ${
-            Number(timeout)
-          }`,
-        );
+        // console.log(
+        //   `PMap.genKeys: duplicate key: ${keyString}, timeout: ${
+        //     Number(timeout)
+        //   }`,
+        // );
         if (timeout-- < 0n) {
           throw new Error(
             `Map.genKeys: timeout with
