@@ -19,7 +19,11 @@ export class PAny<P extends PlutusData> implements PType<P, P> {
     throw new Error("not implemented");
   }
 
-  public show = (): string => {
+  public showData = (data: any): string => {
+    return `Any: ${data}`;
+  };
+
+  public showPType = (): string => {
     return `PAny`;
   };
 

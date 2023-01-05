@@ -9,7 +9,7 @@ import {
   PMapRecord,
   PObject,
   PRecord,
-  propertyTestPTypesParsing,
+  proptestPTypes,
 } from "../mod.ts";
 import { PLiteral } from "../src/plutus/types/literal.ts";
 
@@ -18,7 +18,7 @@ Deno.test("parsing property tests", () => {
     lucidPrimitiveGenerators,
     lucidContainerGenerators,
   );
-  propertyTestPTypesParsing(gen, 100);
+  proptestPTypes(gen, 1000);
 });
 
 const lucidPrimitiveGenerators = [
@@ -28,13 +28,13 @@ const lucidPrimitiveGenerators = [
 ];
 
 const lucidContainerGenerators = [
-  PList.genPType,
-  PMap.genPType,
-  PConstr.genPType,
-  PRecord.genPType,
-  PMapRecord.genPType,
-  // PSum.genPType,
-  PObject.genPType,
   PLiteral.genPType,
   PConstraint.genPType,
+  PList.genPType,
+  PMap.genPType,
+  PMapRecord.genPType,
+  PConstr.genPType,
+  PRecord.genPType,
+  // PSum.genPType,
+  PObject.genPType,
 ];

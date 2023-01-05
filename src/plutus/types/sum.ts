@@ -42,7 +42,11 @@ export class PSum<PFields extends PData>
     return randomChoice(this.pconstrs).genData();
   };
 
-  public show(): string {
+  public showData(_data: PLifted<PSum<PData>>): string {
+    throw new Error(`show: not implemented`);
+  }
+
+  public showPType(): string {
     throw new Error(`show: not implemented`);
   }
 

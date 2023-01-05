@@ -1,6 +1,6 @@
 import { assert } from "https://deno.land/std@0.167.0/testing/asserts.ts";
 import { Generators, genName, genNonNegative, gMaxLength } from "../../mod.ts";
-import { PConstanted, PData, PLifted, PType, RecordOf, t } from "./type.ts";
+import { f, PConstanted, PData, PLifted, PType, RecordOf, t } from "./type.ts";
 
 export class PRecord<PFields extends PData>
   implements PType<Array<PConstanted<PFields>>, RecordOf<PLifted<PFields>>> {
@@ -63,17 +63,34 @@ export class PRecord<PFields extends PData>
     return r;
   };
 
-  public show = (tabs = ""): string => {
-    const tt = t + tabs;
-    const ttt = t + tt;
-    const tttt = t + ttt;
+  public showData = (
+    data: RecordOf<PLifted<PFields>>,
+    tabs = "",
+  ): string => {
+    if (data.size === 0) return "MapRecord {}";
+    const tt = tabs + t;
+    const ttf = tt + f;
+    const ttft = ttf + t;
+
+    const fields = Object.entries(data).map(([key, value]) => {
+      return `${key}: ${this.pfields[key].showData(value, ttft)}`;
+    }).join(",\n");
+    return `Record {
+${ttf}${fields}
+${tt}}`;
+  };
+
+  public showPType = (tabs = ""): string => {
+    const tt = tabs + t;
+    const ttf = tt + f;
+    const ttft = ttf + t;
 
     const fields = Object.entries(this.pfields).map(([key, pfield]) => {
-      return `${key}: ${pfield.show(tttt)}\n${ttt}`;
-    }).join("");
+      return `${key}: ${pfield.showPType(ttft)}\n${ttf}`;
+    }).join(",\n");
     return `PRecord (
-${ttt}population: ${this.population},
-${ttt}pfields: {${fields}}
+${ttf}population: ${this.population},
+${ttf}pfields: {${fields}}
 ${tt})`;
   };
 

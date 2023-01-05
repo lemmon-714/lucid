@@ -11,10 +11,10 @@ import {
 
 const zeroChance = 0.1;
 const ndefChance = 0.1;
-export const maxInteger = BigInt(Number.MAX_SAFE_INTEGER); // TODO better value, maybe look at chain/plutus max
-const maxStringBytes = 100n; // TODO higher
-export const gMaxLength = 5n;
-export const gMaxDepth = 5n;
+export const maxInteger = 9000n; //BigInt(Number.MAX_SAFE_INTEGER); // TODO better value, maybe look at chain/plutus max
+const maxStringBytes = 4n; // TODO higher
+export const gMaxLength = 4n;
+export const gMaxDepth = 4n;
 
 export class Generators {
   constructor(
@@ -52,27 +52,31 @@ export function randomChoice<T>(alternatives: T[]): T {
 }
 
 export function randomIndexedChoice<T>(alternatives: T[]): [T, number] {
+  assert(
+    alternatives.length > 0,
+    `randomIndexedChoice: alternatives.length <= 0`,
+  );
   const choice = Math.floor(Math.random() * alternatives.length);
   return [alternatives[choice], choice];
 }
 
-export function toPlutusData(data: any): PlutusData {
-  if (data instanceof Array) {
-    return data.map(toPlutusData);
-  } else if (data instanceof Map) {
-    const m = new Map<PlutusData, PlutusData>();
-    data.forEach(
-      (value: any, key: any) => {
-        m.set(toPlutusData(key), toPlutusData(value));
-      },
-    );
-    return m;
-  } else if (data instanceof Object) {
-    return toPlutusData(Object.values(data));
-  } else {
-    return data;
-  }
-}
+// export function toPlutusData(data: any): PlutusData {
+//   if (data instanceof Array) {
+//     return data.map(toPlutusData);
+//   } else if (data instanceof Map) {
+//     const m = new Map<PlutusData, PlutusData>();
+//     data.forEach(
+//       (value: any, key: any) => {
+//         m.set(toPlutusData(key), toPlutusData(value));
+//       },
+//     );
+//     return m;
+//   } else if (data instanceof Object) {
+//     return toPlutusData(Object.values(data));
+//   } else {
+//     return data;
+//   }
+// }
 
 export function maybeNdef<T>(value: T) {
   if (Math.random() > ndefChance) {
@@ -83,7 +87,7 @@ export function maybeNdef<T>(value: T) {
 }
 
 export function genPositive(maxValue?: bigint): bigint {
-  assert(maxValue === undefined || maxValue > 0n, `genPositive: maxValue <= 0`);
+  assert(maxValue === undefined || maxValue >= 0n, `genPositive: maxValue < 0`);
   return 1n +
     BigInt(
       Math.floor(Math.random() * Number(maxValue ? maxValue - 1n : maxInteger)),

@@ -76,17 +76,34 @@ export class PMapRecord<PFields extends PData>
     return m;
   };
 
-  public show = (tabs = ""): string => {
-    const tt = t + tabs;
-    const ttt = t + tt;
-    const tttt = t + ttt;
+  public showData = (
+    data: Map<string, PLifted<PFields>>,
+    tabs = "",
+  ): string => {
+    if (data.size === 0) return "MapRecord {}";
+    const tt = tabs + t;
+    const ttf = tt + f;
+    const ttft = ttf + t;
+
+    const fields = [...data.entries()].map(([key, value]) => {
+      return `${key} => ${this.pfields[key].showData(value, ttft)}`;
+    }).join(",\n");
+    return `MapRecord {
+${ttf}${fields}
+${tt}}`;
+  };
+
+  public showPType = (tabs = ""): string => {
+    const tt = tabs + t;
+    const ttf = tt + f;
+    const ttft = ttf + t;
 
     const fields = Object.entries(this.pfields).map(([key, pfield]) => {
-      return `${key}: ${pfield.show(tttt)}\n${ttt}`;
-    }).join("");
+      return `${key} => ${pfield.showPType(ttft)}\n${ttf}`;
+    }).join(",\n");
     return `PMapRecord (
-${ttt}population: ${this.population},
-${ttt}pfields: {${fields}}
+${ttf}population: ${this.population},
+${ttf}pfields: {${fields}}
 ${tt})`;
   };
 

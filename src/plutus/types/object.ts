@@ -77,13 +77,22 @@ export class PObject<O extends Object> implements PType<PlutusOfObject<O>, O> {
     return o;
   };
 
-  public show = (tabs = ""): string => {
+  public showData = (data: O, tabs = ""): string => {
+    const tt = tabs + t;
+    const ttf = tt + f;
+
+    return `Object: ${this.O.name} (
+${ttf}${this.precord.showData(data, ttf)}
+${tt})`;
+  };
+
+  public showPType = (tabs = ""): string => {
     const tt = tabs + t;
     const ttf = tt + f;
 
     return `PObject (
 ${ttf}population: ${this.population},
-${ttf}precord: ${this.precord.show(ttf)},
+${ttf}precord: ${this.precord.showPType(ttf)},
 ${ttf}O: ${this.O.name}
 ${tt})`;
   };

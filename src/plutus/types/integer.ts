@@ -3,7 +3,7 @@ import { genNumber, maxInteger } from "../../mod.ts";
 import { PType } from "./type.ts";
 
 export class PInteger implements PType<bigint, bigint> {
-  public population = Infinity;
+  public population = Number(maxInteger) * 2 + 1;
 
   public plift = (i: bigint): bigint => {
     assert(
@@ -22,7 +22,11 @@ export class PInteger implements PType<bigint, bigint> {
     return genNumber();
   };
 
-  public show = (): string => {
+  public showData = (data: bigint): string => {
+    return `Integer: ${Number(data)}`;
+  };
+
+  public showPType = (): string => {
     return `PInteger`;
   };
 

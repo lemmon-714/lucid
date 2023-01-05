@@ -57,13 +57,22 @@ export class PList<PElem extends PData>
     return PList.genList(this.pelem.genData, length);
   };
 
-  public show = (tabs = ""): string => {
+  public showData = (data: PLifted<PElem>[], tabs = ""): string => {
+    const tt = tabs + t;
+    const ttf = tt + f;
+
+    return `List [
+${data.map((d) => `${ttf}${this.pelem.showData(d, ttf)}`).join(",\n")}
+${tt}]`;
+  };
+
+  public showPType = (tabs = ""): string => {
     const tt = tabs + t;
     const ttf = tt + f;
 
     return `PList (
 ${ttf}population: ${this.population},
-${ttf}pelem: ${this.pelem.show(ttf)},
+${ttf}pelem: ${this.pelem.showPType(ttf)},
 ${ttf}length?: ${this.length}
 ${tt})`;
   };

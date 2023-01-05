@@ -9,6 +9,7 @@ export class PConstraint<PInner extends PData> {
     public pinner: PInner,
     public asserts: ((i: PLifted<PInner>) => void)[],
     public genInnerData: () => PLifted<PInner>,
+    public details?: string,
   ) {
     this.population = pinner.population;
   }
@@ -33,7 +34,16 @@ export class PConstraint<PInner extends PData> {
     return this.genInnerData();
   };
 
-  public show = (tabs = ""): string => {
+  public showData = (data: PLifted<PInner>, tabs = ""): string => {
+    const tt = tabs + t;
+    const ttf = tt + f;
+
+    return `Constraint (
+${ttf}${this.pinner.showData(data, ttf)}
+${tt})`;
+  };
+
+  public showPType = (tabs = ""): string => {
     const tt = tabs + t;
     const ttf = tt + f;
 
@@ -43,9 +53,11 @@ export class PConstraint<PInner extends PData> {
     }).join(`,\n${ttf}`) + `\n
     ${ttf}]`;
 
-    return `PConstraint (
+    return `PConstraint (${
+      this.details ? `\n${ttf}details: ${this.details}` : ""
+    }
 ${ttf}population: ${this.population},
-${ttf}pinner: ${this.pinner.show(ttf)},
+${ttf}pinner: ${this.pinner.showPType(ttf)},
 ${ttf}asserts: \${asserts},
 ${ttf}genInnerData: ${this.genInnerData.toString()}
 ${tt})`;

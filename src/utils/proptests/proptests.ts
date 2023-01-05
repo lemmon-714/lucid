@@ -1,23 +1,27 @@
 import { assertEquals } from "https://deno.land/std@0.167.0/testing/asserts.ts";
-import { Data, PlutusData, PType } from "../../mod.ts";
+import { Data, PData, PlutusData, PType, t } from "../../mod.ts";
 import { Generators, gMaxDepth } from "./generators.ts";
+import { maxInteger } from "./mod.ts";
 
-export function propertyTestPTypesParsing(gen: Generators, iterations: number) {
+export function proptestPTypes(gen: Generators, iterations: number) {
+  const popErrs = new Map<string, number>();
   const dataErrs = new Map<string, number>();
   const ptypeErrs = new Map<string, number>();
   const otherErrs = new Map<string, number>();
 
   for (let i = 0; i < iterations; i++) {
-    const errs = dataErrs.size + ptypeErrs.size + otherErrs.size;
+    const errs = popErrs.size + dataErrs.size + ptypeErrs.size + otherErrs.size;
     console.log(`${i}` + (errs ? ` (${errs} errors)` : ""));
     try {
+      // console.log("generating ptype")
       const ptype = gen.generate(gMaxDepth);
-      // console.log(ptype.show());
+      // console.log("generating data for " + ptype.show(t));
       const data = ptype.genData();
-      // console.log(data);
+      // console.log("constanting " + data);
       const plutusData = ptype.pconstant(data);
       // console.log(plutusData);
 
+      testPopulation(ptype, popErrs);
       testDataParse(plutusData, dataErrs);
       testPTypeParse(plutusData, data, ptype, ptypeErrs);
     } catch (err) {
@@ -25,6 +29,7 @@ export function propertyTestPTypesParsing(gen: Generators, iterations: number) {
     }
   }
   let correct = iterations;
+  correct -= printErrs(popErrs, "Population errors");
   correct -= printErrs(dataErrs, "Data parsing errors");
   correct -= printErrs(ptypeErrs, "PType parsing errors");
   correct -= printErrs(otherErrs, "other errors");
@@ -72,4 +77,28 @@ function printErrs(record: Map<string, number>, name: string): number {
     console.log(`==> no ${name}\n`);
   }
   return total;
+}
+
+function testPopulation(ptype: PData, errors: Map<string, number>) {
+  if (ptype.population >= 2n * maxInteger + 1n) return;
+  const popStrings: string[] = [];
+
+  try {
+    for (let i = 0n; i < ptype.population; i++) {
+      for (let j = 0n; j < ptype.population; j++) {
+        const p = ptype.genData();
+        const s = ptype.showData(p);
+        if (!popStrings.includes(s)) {
+          popStrings.push(s);
+        }
+      }
+    }
+    assertEquals(
+      popStrings.length,
+      ptype.population,
+      `ptype.population: ${ptype.population}, popStrings.length: ${popStrings.length}`,
+    );
+  } catch (err) {
+    logError(err, errors);
+  }
 }

@@ -41,14 +41,23 @@ export class PConstr<PFields extends PData>
     return this.pfields.genData();
   };
 
-  public show = (tabs = ""): string => {
+  public showData = (data: RecordOf<PLifted<PFields>>, tabs = ""): string => {
+    const tt = tabs + t;
+    const ttf = tt + f;
+
+    return `Constr (
+${ttf}${this.pfields.showData(data, ttf)}},
+${tt})`;
+  };
+
+  public showPType = (tabs = ""): string => {
     const tt = tabs + t;
     const ttf = tt + f;
 
     return `PConstr (
 ${ttf}population: ${this.population},
 ${ttf}index: ${this.index.toString()},
-${ttf}pfields: ${this.pfields.show(ttf)}
+${ttf}pfields: ${this.pfields.showPType(ttf)}
 ${tt})`;
   };
 

@@ -25,13 +25,28 @@ export class PLiteral<PT extends PData>
     return this.literal;
   };
 
-  public show = (tabs = ""): string => {
+  public showData = (data: PLifted<PT>, tabs = ""): string => {
+    assert(
+      data === this.literal,
+      // `Literal does not match: ${this.showData(data)} vs. ${
+      //   this.showData(this.literal)
+      // }`,
+    );
+    const tt = tabs + t;
+    const ttf = tt + f;
+
+    return `Literal (
+${ttf}${this.pliteral.showData(data, ttf)}
+${tt})`;
+  };
+
+  public showPType = (tabs = ""): string => {
     const tt = tabs + t;
     const ttf = tt + f;
 
     return `PLiteral (
 ${ttf}population: ${this.population},
-${ttf}plutusLiteral: ${this.pliteral.show(ttf)},
+${ttf}plutusLiteral: ${this.pliteral.showPType(ttf)},
 ${ttf}literal: TODO implement
 ${tt})`;
   };

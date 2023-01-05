@@ -22,7 +22,11 @@ export class PByteString implements PType<string, string> {
     return genString("abcdef");
   }
 
-  public show = (): string => {
+  public showData = (data: string): string => {
+    return `ByteString: ${data}`;
+  };
+
+  public showPType = (): string => {
     return `PByteString`;
   };
 
